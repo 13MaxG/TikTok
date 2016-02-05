@@ -20,7 +20,22 @@ submits/executer - skrypt uruchamiajcy zgłoszenia
 
 # Instalacja 
 Zainstaluj pakiety wymienione w Technologi oraz skolonuj repozytorium.
-python manage.py migrate --run-syncdb
-python manage.py createsuperuser
-python manage.py runserver
+
+`python manage.py migrate --run-syncdb`
+
+`python manage.py createsuperuser`
+
+```
+python manage.py shell
+$ from django.contrib.auth.models import User
+$ from user.models import MyUser
+$ admin = MyUser(user=User.objects.all()[0])
+$ admin.save()
+```
+
+
+
+`python manage.py runserver`
+
+
 
