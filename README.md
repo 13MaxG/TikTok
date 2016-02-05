@@ -18,7 +18,7 @@ user - moduł pozwalacjący na logowanie/rejestrowanie.
 submits/executer - skrypt uruchamiajcy zgłoszenia
 
 
-# Instalacja 
+# Instalacja do rozwoju 
 Zainstaluj pakiety wymienione w Technologi oraz skolonuj repozytorium.
 
 `python manage.py migrate --run-syncdb`
