@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}{{ problem.name }} - komentarze{% endblock %}
+{% block header %}<a href="{% url 'problems:detail' problem.id %}">{{problem.name}}</a> - komentarze{% endblock %}
+
+
+
+{% block content %}
+{{message}}
+
+{% for comment in comment_list %}
+
+    <p class="comment">
+        <p class="commentDetail">
+            <a href="{% url 'user:detail' comment.user.id%}"> {{ comment.user.username }}</a>, {{comment.pub_date|date:"H:i d/m/Y"}} :
+        </p>
+            {{comment.content | linebreaks}}
+    </p>
+
+{% endfor %}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if comment_list.has_previous %}
+            <a href="?page={{ comment_list.previous_page_number }}"> poprzednia</a>
+        {% endif %}
+
+        <span class="current">
+            Strona {{ comment_list.number }} z {{ comment_list.paginator.num_pages }}.
+        </span>
+
+        {% if comment_list.has_next %}
+            <a href="?page={{ comment_list.next_page_number }}">następna</a>
+        {% endif %}
+    </span>
+</div>
+
+{% if user.is_authenticated %}
+<hr />
+<h2>Komentuj</h2>
+<p>
+<form action="{% url 'problems:comment' problem.id %}" method="post">
+{% csrf_token %}
+    <table>{{ form.as_table }}</table>
+
+<input type="submit" value="Wyślij" />
+</form>
+</p>
+{% endif %}
+
+{% endblock %}

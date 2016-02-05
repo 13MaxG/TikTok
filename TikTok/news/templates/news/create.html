@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Dodaj news{% endblock %}
+{% block header %}Dodaj news{% endblock %}
+
+
+
+{% block bonusAction %}
+
+
+{% endblock %}
+
+
+{% block content %}
+{{message}}
+
+<form action="{% url 'news:create'  %}" method="post">
+{% csrf_token %}
+    <table>{{ form.as_table }}</table>
+<br />
+<input type="submit" value="Dodaj" />
+</form>
+
+
+{% endblock %}
+
+

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Zgłoszenie {{submit.id}} {% endblock %}
+{% block header %}Zgłoszenie {{submit.id}} {% endblock %}
+
+
+
+{% block bonusAction %}
+
+{% endblock %}
+
+
+{% block content %}
+
+    <table class="my_table" >
+        <tr>
+            <td>numer</td><td>{{ submit.id }}</td>
+        </tr>
+        <tr>
+            <td>data</td><td>{{ submit.pub_date|date:"H:i d/m/Y" }}</td>
+        </tr>
+        <tr>
+            <td>autor</td><td><a href="{% url 'user:detail' submit.user.id %}">{{submit.user}}</a></td>
+        </tr>
+        <tr>
+            <td>zadanie</td><td><a href="{% url 'problems:detail' submit.problem.id %}">{{ submit.problem.name }} </a></td>
+        </tr>
+        <tr>
+            <td>wykonywane</td><td>{{ submit.is_executing| yesno:"Tak,Nie" }}</td>
+        </tr>
+        <tr>
+            <td>wykonano</td><td>{{ submit.executed | yesno:"Tak,Nie" }}</td>
+        </tr>
+        <tr>
+            <td>zaliczono</td><td>{{ submit.accomplishment | yesno:"Tak,Nie" }}</td>
+        </tr>
+    </table>
+
+
+<hr />
+<h2>Kod źródłowy</h2>
+<p>{{ submit.code  | safe  | linebreaks  }} </p>
+
+<hr />
+<h2>Komentarz testerki:</h2>
+<p> {{ submit.comment  | safe  | linebreaks  }} </p>
+
+
+{% if user.is_authenticated and user.is_staff %}
+
+<hr />
+<h2>Wyjście jądra</h2>
+<p> {{ submit.output  | safe | linenumbers | linebreaks   }} </p>
+
+{% endif %}
+{% endblock %}
+
+
+
+
+
+
+
+
+
+

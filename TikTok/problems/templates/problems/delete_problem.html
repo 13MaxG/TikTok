@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Usuwanie problemu{% endblock %}
+{% block header %}Usuwanie problemuu{% endblock %}
+
+
+
+{% block bonusAction %}
+
+
+{% endblock %}
+
+
+{% block content %}
+Zamierzasz usunąć problem.
+Zepsujesz zabawę  {{problem.users_total}} osobom. Jesteś pewien? Przepisz nazwę problemu.
+{{message}}
+<form enctype="multipart/form-data"  action="{% url 'problems:delete_problem' problem.id %}" method="post">
+{% csrf_token %}
+    <table>{{ form.as_table }}</table>
+<br />
+<input type="submit" value="Usuń" />
+</form>
+{% endblock %}
+
+
+

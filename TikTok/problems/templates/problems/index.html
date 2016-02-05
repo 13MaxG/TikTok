@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Lista problemów{% endblock %}
+{% block header %}Lista problemów{% endblock %}
+
+
+
+{% block content %}
+
+{% if problems_list %}
+    <ul>
+    {% for problem in problems_list %}
+        <li><a href="{% url 'problems:detail' problem.id %}">{{ problem.name }} </a>({{ problem.users_did }} / {{ problem.users_total }} )</li>
+    {% endfor %}
+    </ul>
+
+    <div class="pagination">
+    <span class="step-links">
+        {% if problems_list.has_previous %}
+            <a href="?page={{ problems_list.previous_page_number }}"> poprzednia</a>
+        {% endif %}
+
+        <span class="current">
+            Strona {{ problems_list.number }} z {{ problems_list.paginator.num_pages }}.
+        </span>
+
+        {% if problems_list.has_next %}
+            <a href="?page={{ problems_list.next_page_number }}">następna</a>
+        {% endif %}
+    </span>
+</div>
+
+{% else %}
+    <p>Brak problemów.</p>
+{% endif %}
+
+{% if user.is_authenticated and user.is_staff %}
+<hr />
+<h2>Administracja</h2>
+<p>
+<a href="{% url 'problems:create'  %}">Dodaj problem</a>
+</p>
+
+{% endif %}
+
+{% endblock %}
