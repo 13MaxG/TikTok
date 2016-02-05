@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Logowanie{% endblock %}
+{% block header %}Logowanie{% endblock %}
+
+
+
+{% block bonusAction %}
+
+{% endblock %}
+
+
+{% block content %}
+{{message}}
+
+
+
+<form action="{% url 'user:login'%}" method="post">
+{% csrf_token %}
+    <table>{{ form.as_table }}</table>
+<br />
+<input type="submit" value="Zaloguj" />
+</form>
+
+{% endblock %}
+
+
+
+
+
+
+
+

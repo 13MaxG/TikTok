@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}{{ problem.name }}{% endblock %}
+{% block header %}{{ problem.name }} {% endblock %}
+
+{% block content %}
+
+<p>Próbowało  {{ problem.users_total }} osób. Udało się {{ problem.users_did }} osobom. </p>
+<p><a href="{% url 'problems:download' problem.id %}">Pobierz PDF</a> &emsp;
+    <a href="{% url 'problems:comments' problem.id %}">Dyskusja ({{comments_num}})</a>  &emsp;
+    {% if user.is_authenticated  %}
+    <a href="{% url 'problems:show_submits' problem.id %}">Zgłoszenia</a>&emsp;
+<a href="{% url 'problems:submit' problem.id %}">Wyślij rozwiązanie</a>
+    {% endif %}
+</p>
+<hr />
+<iframe class="my_iframe" src="{% url 'problems:download' problem.id %}" > </iframe>
+<hr />
+{% if user.is_authenticated and user.is_staff %}
+
+<h2>Administracja</h2>
+<p>
+<a href="{% url 'problems:show_submits' problem.id %}">Przeglądaj zgłoszenia</a>
+</p>
+<p>
+<a href="{% url 'problems:edit_name' problem.id %}">Edytuj nazwę</a>
+    </p>
+<p>
+<a href="{% url 'problems:edit_pdf' problem.id %}">Edytuj treść</a></p>
+<p>
+<a href="{% url 'problems:delete_problem' problem.id %}">Usuń zadane</a></p>
+<p>
+<a href="{% url 'problems:add_test' problem.id %}">Dodaj nowy test</a></p>
+<p>
+Testy:
+<ul>
+{% for test in tests %}
+    <li><a href="{% url 'problems:edit_test' test.id %}">{{ test.id }} </a> | Usu<a href="{% url 'problems:delete_test' test.id %}">ń</a></li>
+{% endfor %}
+</ul>
+</p>
+{% endif %}
+
+
+
+{% endblock %}

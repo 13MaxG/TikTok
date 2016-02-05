@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Wiadomości{% endblock %}
+{% block header %}Wiadomości{% endblock %}
+
+
+
+{% block content %}
+{% if news_list %}
+    {% for news in news_list %}
+        <p class="news">
+            {{news.content |safe | linebreaks}}
+        </p>
+        <p class="newsDetail">
+            <a href="{% url 'user:detail' news.user.id%}"> {{ news.user.username }}</a>, {{news.pub_date|date:"H:i d/m/Y"}}
+        </p>
+    {% endfor %}
+
+    <div class="pagination">
+    <span class="step-links">
+        {% if news_list.has_previous %}
+            <a href="?page={{ news_list.previous_page_number }}"> poprzednia</a>
+        {% endif %}
+
+        <span class="current">
+            Strona {{ news_list.number }} z {{ news_list.paginator.num_pages }}.
+        </span>
+
+        {% if news_list.has_next %}
+            <a href="?page={{ news_list.next_page_number }}">następna</a>
+        {% endif %}
+    </span>
+</div>
+
+{% else %}
+    <p>Brak wiadomości.</p>
+{% endif %}
+
+{% if user.is_authenticated and user.is_staff %}
+<hr />
+<h2>Administracja</h2>
+<p><a href="{% url 'news:create' %}">Nowa wiadomość</a><br />
+</p>
+
+{% endif %}
+
+
+{% endblock %}

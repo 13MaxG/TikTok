@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Szczegóły konta{% endblock %}
+{% block header %}Szczegóły konta{% endblock %}
+
+
+{% block content %}
+
+
+<p>
+    {{c_user.first_name}} "{{c_user.username}}" {{c_user.last_name}}
+</p>
+
+<p>
+    {{my_user.motto}}
+</p>
+
+{% if user.id == c_user.id %}
+<hr />
+<p> <a href="{% url 'user:edit'%}">Edytuj</a> &emsp; <a href="{% url 'user:edit_password'%}">Zmień hasło</a> &emsp; <a href="{% url 'user:logout'%}">Wyloguj</a> </p>
+{% endif %}
+<hr />
+<p>
+Rozwiązane zadania ({{ problems_accomplishments|length }}):
+</p>
+<ul>
+{% for problem in problems_accomplishments %}
+    <li><a href="{% url 'problems:detail' problem.id %}">{{ problem.name }} </a></li>
+{% endfor %}
+</ul>
+
+<hr />
+<p>
+Trwają zmagania ({{ problems_tried|length }}):
+</p>
+<ul>
+{% for problem in problems_tried %}
+    <li><a href="{% url 'problems:detail' problem.id %}">{{ problem.name }} </a></li>
+{% endfor %}
+</ul>
+
+
+{% endblock %}
+
+
+
+

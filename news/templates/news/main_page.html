@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Strona Główna{% endblock %}
+{% block header %}Wiadomości{% endblock %}
+
+{% block bonusAction %}
+{% if user.is_authenticated and user.is_staff %}
+<a href="{% url 'news:create' %}">Nowa wiadomość</a><br />
+
+
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{% if news_list %}
+
+    {% for news in news_list %}
+
+        <p class="news">
+            {{news.content|safe | linebreaks}}
+        </p>
+        <p class="newsDetail">
+            <a href="{% url 'user:detail' news.user.id%}"> {{ news.user.username }}</a>, {{news.pub_date|date:"H:i d/m/Y"}}
+        </p>
+
+
+
+    {% endfor %}
+    <p class="newsDetail"><a href="{% url 'news:index' %} ">Starsze...</a></p>
+{% else %}
+    <p>Brak wiadomości.</p>
+{% endif %}
+
+<hr />
+<h2>Czym jest Tik Tok?</h2>
+<p>
+    Jest to strona internetowa gromadząca zadania do rozwiązania przy pomocy programu Mathematica. Zadania nawiązują do różnych dziedzin nauki i mają na celu rozwijanie umięjętności szybkiego modelowania rozwiązań korzystając z Mathematici. Rozwiązania do zadań można zgłaszać, a system oceni ich poprawność, na testach przygotowanych przez nas.
+</p>
+
+{% if user.is_authenticated and user.is_staff %}
+<hr />
+<h2>Administracja</h2>
+<p><a href="{% url 'news:create' %}">Nowa wiadomość</a><br />
+</p>
+
+{% endif %}
+{% endblock %}
