@@ -19,7 +19,7 @@ submits/executer - skrypt uruchamiajcy zgłoszenia
 
 
 # Instalacja do rozwoju 
-Zainstaluj pakiety wymienione w Technologi oraz skolonuj repozytorium.
+Zainstaluj pakiety wymienione w Technologi. Dla Windows należy podpiąć je pod PATH.  Skolonuj repozytorium.
 
 `python manage.py migrate --run-syncdb`
 
