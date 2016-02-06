@@ -1,0 +1,120 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      2970,        111]
+NotebookOptionsPosition[      2361,         84]
+NotebookOutlinePosition[      2704,         99]
+CellTagsIndexPosition[      2661,         96]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Wsp\[OAcute]\[LSlash]liniowe punkty", "Subsubsection",
+ CellChangeTimes->{{3.660481469689695*^9, 3.6604814754028025`*^9}, {
+  3.6604815776332273`*^9, 3.660481578610381*^9}}],
+
+Cell[TextData[{
+ "Dane s\:0105 trzy punkty ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"\[Element]", 
+    SuperscriptBox["\[DoubleStruckCapitalZ]", "2"]}], TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ ". Napisa\[CAcute] funkcj\:0119 ",
+ StyleBox["wspolliniowe",
+  FontSlant->"Italic"],
+ " stwierdzaj\:0105c\:0105 czy takie s\:0105."
+}], "Text",
+ CellChangeTimes->{{3.660481478648058*^9, 3.6604815854267216`*^9}, {
+  3.6604816164627657`*^9, 3.6604817259869537`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Przyk\[LSlash]ad", "Subsubsection",
+ CellChangeTimes->{{3.6604817332991486`*^9, 3.6604817350433846`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"wspolliniowe", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"0", ",", "0"}], "}"}], ",", " ", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", "0"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"2", ",", "0"}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.66048173941249*^9, 3.6604817577535152`*^9}}],
+
+Cell[BoxData["True"], "Output",
+ CellChangeTimes->{3.6604821364104776`*^9, 3.6604821685342884`*^9, 
+  3.6604827431183043`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"wspolliniowe", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"0", ",", "0"}], "}"}], ",", " ", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", "1"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"2", ",", "0"}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.660482142865074*^9, 3.660482143048178*^9}}],
+
+Cell[BoxData["False"], "Output",
+ CellChangeTimes->{{3.660482143724653*^9, 3.6604821698922386`*^9}, 
+   3.660482746484526*^9}]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{738, 746},
+WindowMargins->{{176, Automatic}, {63, Automatic}},
+FrontEndVersion->"10.2 for Microsoft Windows (64-bit) (July 29, 2015)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 179, 2, 34, "Subsubsection"],
+Cell[762, 26, 470, 13, 32, "Text"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1269, 44, 111, 1, 34, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[1405, 49, 317, 9, 31, "Input"],
+Cell[1725, 60, 126, 2, 31, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1888, 67, 316, 9, 31, "Input"],
+Cell[2207, 78, 126, 2, 31, "Output"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

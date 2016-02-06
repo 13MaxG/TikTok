@@ -1,0 +1,101 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      2523,         92]
+NotebookOptionsPosition[      2022,         69]
+NotebookOutlinePosition[      2365,         84]
+CellTagsIndexPosition[      2322,         81]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Wybieracz liczb pierwszych", "Subsubsection",
+ CellChangeTimes->{{3.6604804159900885`*^9, 3.660480434556363*^9}}],
+
+Cell[TextData[{
+ "Dany jest zbi\[OAcute]r zawieraj\:0105cy ",
+ StyleBox["n",
+  FontSlant->"Italic"],
+ " liczb ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"naturalnych", "\[LessEqual]", 
+    SuperscriptBox["10", "9"]}], TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ ", 1 \[LessEqual] ",
+ StyleBox["n \[LessEqual] ",
+  FontSlant->"Italic"],
+ "50. Napisa\[CAcute] funkcj\:0119 ",
+ StyleBox["wybierz",
+  FontSlant->"Italic"],
+ " kt\[OAcute]ra stworzy zbi\[OAcute]r zawieraj\:0105cy tylko liczby pierwsze \
+kt\[OAcute]re wyst\:0105pi\[LSlash]y w podanym zbiorze."
+}], "Text",
+ CellChangeTimes->{{3.6604804375524397`*^9, 3.6604805745322337`*^9}, {
+  3.660480616574137*^9, 3.660480617197546*^9}, {3.6604810824060965`*^9, 
+  3.6604811014396334`*^9}, {3.6604811393791556`*^9, 3.6604811419964333`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Przyk\[LSlash]ad", "Subsubsection",
+ CellChangeTimes->{{3.660480784930814*^9, 3.6604807924461603`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"wybierz", "[", 
+  RowBox[{"Range", "[", 
+   RowBox[{"1", ",", "10"}], "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.6604807940222692`*^9, 3.660480794030276*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"2", ",", "3", ",", "5", ",", "7"}], "}"}]], "Output",
+ CellChangeTimes->{3.6604807946507244`*^9}]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{738, 746},
+WindowMargins->{{Automatic, 154}, {18, Automatic}},
+FrontEndVersion->"10.2 for Microsoft Windows (64-bit) (July 29, 2015)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 119, 1, 34, "Subsubsection"],
+Cell[702, 25, 796, 21, 51, "Text"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1535, 51, 109, 1, 34, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[1669, 56, 185, 4, 31, "Input"],
+Cell[1857, 62, 137, 3, 31, "Output"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

@@ -1,0 +1,102 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      2601,         93]
+NotebookOptionsPosition[      2100,         70]
+NotebookOutlinePosition[      2442,         85]
+CellTagsIndexPosition[      2399,         82]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Generowanie niewsp\[OAcute]\[LSlash]liniowych punkt\[OAcute]w", \
+"Subsubsection",
+ CellChangeTimes->{{3.660483104069698*^9, 3.66048311736017*^9}}],
+
+Cell[TextData[{
+ "Dana jest liczba naturalna n \[LessEqual]50. Napisa\[CAcute] funkcj\:0119 ",
+ StyleBox["generuj",
+  FontSlant->"Italic"],
+ " kt\[OAcute]ra wygeneruje n punkt\[OAcute]w ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"\[Element]", 
+    SuperscriptBox["\[DoubleStruckCapitalZ]", "2"]}], TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ ", takich, \:017ce \:017cadne trzy nie s\:0105 wsp\[OAcute]\[LSlash]liniowe. \
+\n\nProblem mo\:017cna rozwi\:0105za\[CAcute] dla dowolnego n."
+}], "Text",
+ CellChangeTimes->{{3.6604831238287106`*^9, 3.6604832329034166`*^9}, {
+  3.6604839261715918`*^9, 3.660483927197325*^9}, {3.6604842222674294`*^9, 
+  3.6604842542871704`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Przyk\[LSlash]ad", "Subsubsection",
+ CellChangeTimes->{{3.6604832368232145`*^9, 3.6604832392199535`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"generuj", "[", "4", "]"}]], "Input",
+ CellChangeTimes->{{3.66048337638212*^9, 3.6604833783404937`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"0", ",", "0"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", "1"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"0", ",", "1"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", "0"}], "}"}]}], "}"}]], "Output",
+ CellChangeTimes->{{3.66048359839683*^9, 3.6604836072250576`*^9}}]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{738, 746},
+WindowMargins->{{Automatic, 52}, {Automatic, 83}},
+FrontEndVersion->"10.2 for Microsoft Windows (64-bit) (July 29, 2015)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 153, 2, 34, "Subsubsection"],
+Cell[736, 26, 677, 15, 89, "Text"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1450, 46, 111, 1, 34, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[1586, 51, 127, 2, 31, "Input"],
+Cell[1716, 55, 356, 11, 31, "Output"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

@@ -1,0 +1,204 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      5402,        195]
+NotebookOptionsPosition[      4751,        167]
+NotebookOutlinePosition[      5093,        182]
+CellTagsIndexPosition[      5050,        179]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Wielok\:0105t foremny", "Subsubsection",
+ CellChangeTimes->{{3.6604787493597364`*^9, 3.660478756540837*^9}, {
+  3.660479944105837*^9, 3.6604799469518566`*^9}}],
+
+Cell[TextData[{
+ "Dana jest liczba n naturalna, n\[GreaterEqual]3 \[And] n\[LessEqual]32. \
+Napisa\[CAcute] funkcj\:0119 generuj\:0105ca punkty n-k\:0105ta foremnego o \
+\:015brodku w punkcie (0,0) oraz jednym wierzcho\[LSlash]ku w punkcie (1,0). \
+\n\nFunkcja musi mie\[CAcute] nazw\:0119 ",
+ StyleBox["wielokatForemny,",
+  FontSlant->"Italic"],
+ " oraz mo\:017ce by\[CAcute] postaci:"
+}], "Text",
+ CellChangeTimes->{{3.6604787615698586`*^9, 3.660478848905396*^9}, {
+  3.660478960825494*^9, 3.660478962692859*^9}, {3.660479549339529*^9, 
+  3.6604795827452183`*^9}, {3.660479724305006*^9, 3.6604797682107983`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"wielokatForemny", "[", "n_", "]"}], " ", ":=", " ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"1", ",", "0"}], "}"}], ",", " ", 
+      RowBox[{"{", 
+       RowBox[{"0", ",", "1"}], "}"}], ",", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"-", "1"}], ",", "0"}], "}"}], ",", " ", 
+      RowBox[{"{", 
+       RowBox[{"0", ",", 
+        RowBox[{"-", "1"}]}], "}"}]}], "}"}]}], "\[IndentingNewLine]", 
+   "]"}]}]], "Input",
+ CellChangeTimes->{{3.6604788530686026`*^9, 3.6604788816112146`*^9}, {
+  3.6604789872962866`*^9, 3.660479005779417*^9}, {3.6604792429629173`*^9, 
+  3.6604792534583206`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Przyk\[LSlash]ad", "Subsubsection",
+ CellChangeTimes->{{3.660479772336746*^9, 3.6604797740729647`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"wielokatForemny", "[", "3", "]"}]], "Input",
+ CellChangeTimes->{{3.660479311293399*^9, 3.6604793129756126`*^9}, {
+  3.6604793769070206`*^9, 3.660479377031116*^9}, {3.660479780381451*^9, 
+  3.6604797805156813`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", 
+      FractionBox["1", "2"]}], ",", 
+     FractionBox[
+      SqrtBox["3"], "2"]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", 
+      FractionBox["1", "2"]}], ",", 
+     RowBox[{"-", 
+      FractionBox[
+       SqrtBox["3"], "2"]}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", "0"}], "}"}]}], "}"}]], "Output",
+ CellChangeTimes->{
+  3.660479313277808*^9, {3.6604793582988043`*^9, 3.660479377507427*^9}, {
+   3.6604797810034466`*^9, 3.6604798226123734`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"wielokatForemny", "[", "5", "]"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      FractionBox["1", "4"], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "1"}], "+", 
+        SqrtBox["5"]}], ")"}]}], ",", 
+     SqrtBox[
+      RowBox[{
+       FractionBox["5", "8"], "+", 
+       FractionBox[
+        SqrtBox["5"], "8"]}]]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      FractionBox["1", "4"], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "1"}], "-", 
+        SqrtBox["5"]}], ")"}]}], ",", 
+     SqrtBox[
+      RowBox[{
+       FractionBox["5", "8"], "-", 
+       FractionBox[
+        SqrtBox["5"], "8"]}]]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      FractionBox["1", "4"], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "1"}], "-", 
+        SqrtBox["5"]}], ")"}]}], ",", 
+     RowBox[{"-", 
+      SqrtBox[
+       RowBox[{
+        FractionBox["5", "8"], "-", 
+        FractionBox[
+         SqrtBox["5"], "8"]}]]}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      FractionBox["1", "4"], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "1"}], "+", 
+        SqrtBox["5"]}], ")"}]}], ",", 
+     RowBox[{"-", 
+      SqrtBox[
+       RowBox[{
+        FractionBox["5", "8"], "+", 
+        FractionBox[
+         SqrtBox["5"], "8"]}]]}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", "0"}], "}"}]}], "}"}]], "Output",
+ CellChangeTimes->{{3.660479778577159*^9, 3.6604798240564175`*^9}}]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{738, 746},
+WindowMargins->{{Automatic, 85}, {43, Automatic}},
+FrontEndVersion->"10.2 for Microsoft Windows (64-bit) (July 29, 2015)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 165, 2, 34, "Subsubsection"],
+Cell[748, 26, 614, 11, 87, "Text"],
+Cell[1365, 39, 758, 21, 72, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2160, 65, 109, 1, 34, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[2294, 70, 238, 4, 31, "Input"],
+Cell[2535, 76, 572, 20, 51, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3144, 101, 68, 1, 31, "Input"],
+Cell[3215, 104, 1508, 59, 134, "Output"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
