@@ -29,39 +29,45 @@ def execute():
 			p.comment = ""
 			tests = TestProgram.objects.filter(problem=p.problem)
 
+			legit = isMathematicaCodeLegit(p.code)
+			
 			accomplishments = 0
-			for test in tests:
-				# uruchom kernel
-				mathematica_input = p.code + "\n\n" + test.code
-				program = Popen(['wolfram'], stdout=PIPE, stdin=PIPE, stderr=PIPE)
-				timer = Timer(test.time, program.terminate)
-				timer.start()
-				output_data = program.communicate(input=bytes(mathematica_input, 'UTF-8'))[0]
+			
+			if not legit: 
+				p.comment += "Użyto niedozwolonego słowa"
+			else:
+				for test in tests:
+					# uruchom kernel
+					mathematica_input = p.code + "\n\n" + test.code
+					program = Popen(['wolfram'], stdout=PIPE, stdin=PIPE, stderr=PIPE)
+					timer = Timer(test.time, program.terminate)
+					timer.start()
+					output_data = program.communicate(input=bytes(mathematica_input, 'UTF-8'))[0]
 
-				fast_enough = False
-				if timer.is_alive():
-					timer.cancel()
-					fast_enough = True
+					fast_enough = False
+					if timer.is_alive():
+						timer.cancel()
+						fast_enough = True
 
-				if not fast_enough:
-					p.comment += "TEST " + str(test.id) + ": Przekroczono limit czasu"
-				else:
-					output = output_data.decode("utf-8")
-					position = output.rfind("ACC:")
-					accomplishment_string = output[position + 4:position + 7]
-
-					p.comment += "TEST " + str(test.id) + ":"
-					if accomplishment_string == 'YES':
-						accomplishments += 1
-						p.comment += "OK\n"
+					if not fast_enough:
+						p.comment += "TEST " + str(test.id) + ": Przekroczono limit czasu"
 					else:
-						p.comment += "BŁĄD\n"
+						output = output_data.decode("utf-8")
+						position = output.rfind("ACC:")
+						accomplishment_string = output[position + 4:position + 7]
 
-					test_comments = findall("\(COMMENT:(.*?):COMMENT\)", output)
-					if len(test_comments) > 0:
-						p.comment += "TEST " + str(test.id) + " komentarz: " + test_comments[-1] + "\n"
+						p.comment += "TEST " + str(test.id) + ":"
+						if accomplishment_string == 'YES':
+							accomplishments += 1
+							p.comment += "OK\n"
+						else:
+							p.comment += "BŁĄD\n"
 
-					p.output += output
+						test_comments = findall("\(COMMENT:(.*?):COMMENT\)", output)
+						if len(test_comments) > 0:
+							p.comment += "TEST " + str(test.id) + " komentarz: " + test_comments[-1] + "\n"
+
+						p.output += output
 
 			p.accomplishment = (accomplishments == len(tests))
 
@@ -69,28 +75,8 @@ def execute():
 			p.executed = True
 			p.save()
 
-			submits_accomplishments = Submit.objects.filter(accomplishment=True, user=p.user)
-			seen = set()
-			seen_add = seen.add
-			problems_accomplishments = [x.problem for x in submits_accomplishments if not (x.problem in seen or seen_add(x.problem))]
-			my_user = MyUser.objects.get(user=p.user)
-			my_user.accomplishments = len(problems_accomplishments)
-
-			my_user.save()
-
-			# uaktualnij informacje o próbach i sukcesach
-			submits_accomplishments = Submit.objects.filter(problem=p.problem, accomplishment=True)
-			seen = set()
-			seen_add = seen.add
-			users_accomplishments = [x.user for x in submits_accomplishments if not (x.user in seen or seen_add(x.user))]
-			submits_total = Submit.objects.filter(problem=p.problem)
-			seen2 = set()
-			seen2_add = seen2.add
-			users_total = [x.user for x in submits_total if not (x.user in seen2 or seen2_add(x.user))]
-
-			p.problem.users_did = len(users_accomplishments)
-			p.problem.users_total = len(users_total)
-			p.problem.save()
+			updateStats(p)
+			
 	except:
 		global executing
 		executing = False
@@ -99,3 +85,34 @@ def execute():
 	executing = False
 
 	execute()
+	
+def updateStats(p):
+	submits_accomplishments = Submit.objects.filter(accomplishment=True, user=p.user)
+	seen = set()
+	seen_add = seen.add
+	problems_accomplishments = [x.problem for x in submits_accomplishments if not (x.problem in seen or seen_add(x.problem))]
+	my_user = MyUser.objects.get(user=p.user)
+	my_user.accomplishments = len(problems_accomplishments)
+
+	my_user.save()
+
+
+	submits_accomplishments = Submit.objects.filter(problem=p.problem, accomplishment=True)
+	seen = set()
+	seen_add = seen.add
+	users_accomplishments = [x.user for x in submits_accomplishments if not (x.user in seen or seen_add(x.user))]
+	submits_total = Submit.objects.filter(problem=p.problem)
+	seen2 = set()
+	seen2_add = seen2.add
+	users_total = [x.user for x in submits_total if not (x.user in seen2 or seen2_add(x.user))]
+
+	p.problem.users_did = len(users_accomplishments)
+	p.problem.users_total = len(users_total)
+	p.problem.save()
+	
+def isMathematicaCodeLegit(code):
+	list = ['kupa', 'pupa']
+	for word in list:
+		if word in code:
+			return False
+	return True
