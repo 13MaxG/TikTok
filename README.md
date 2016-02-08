@@ -25,15 +25,7 @@ Zainstaluj pakiety wymienione w Technologi. Dla Windows należy podpiąć je pod
 
 `python manage.py createsuperuser`
 
-```
-python manage.py shell
-$ from django.contrib.auth.models import User
-$ from user.models import MyUser
-$ admin = MyUser(user=User.objects.all()[0])
-$ admin.save()
-```
-
-
+`python setup.py`
 
 `python manage.py runserver`
 
