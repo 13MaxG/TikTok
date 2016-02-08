@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Lista konkursów{% endblock %}
+{% block header %}Lista konkursów{% endblock %}
+
+
+
+{% block content %}
+
+<ul>
+        <li><a href="{% url 'problems:set_active_group' main.shortname  %}">{{ main.name }} ({{ main.problems }})</a></li>
+</ul>
+
+{% if groups_list %}
+    <ul>
+    {% for group in groups_list %}
+        <li><a href="{% url 'problems:set_active_group' group.shortname  %}">{{ group.name }} ({{ group.problems }})  </a></li>
+    {% endfor %}
+    </ul>
+
+    <div class="pagination">
+    <span class="step-links">
+        {% if groups_list.has_previous %}
+            <a href="?page={{ groups_list.previous_page_number }}"> poprzednia</a>
+        {% endif %}
+
+        <span class="current">
+            Strona {{ groups_list.number }} z {{ groups_list.paginator.num_pages }}.
+        </span>
+
+        {% if groups_list.has_next %}
+            <a href="?page={{ groups_list.next_page_number }}">następna</a>
+        {% endif %}
+    </span>
+</div>
+
+{% else %}
+    <p>Brak konkursów.</p>
+{% endif %}
+
+{% if user.is_authenticated and user.is_staff %}
+<hr />
+<h2>Administracja</h2>
+<p>
+<a href="{% url 'problems:create_group'  %}">Dodaj konkurs</a> <br />
+
+</p>
+
+{% endif %}
+
+{% endblock %}

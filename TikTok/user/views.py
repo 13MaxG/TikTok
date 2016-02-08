@@ -10,9 +10,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .forms import LoginForm, RegisterForm, EditForm, EditPasswordForm
 
-from .models import MyUser
+from .models import MyUser, Ranking
 from submits.models import Submit
-
+from problems.models import Group
 
 def index(request):
 	if request.user.is_authenticated():
@@ -139,6 +139,7 @@ def edit(request):
 
 	return render(request, 'user/edit.html', {'form': form, 'message': message})
 
+
 def edit_password(request):
 	if not request.user.is_authenticated():
 		return HttpResponseRedirect('/user/')
@@ -160,7 +161,7 @@ def edit_password(request):
 			else:
 				django_login(request, user2)
 
-				if(username == request.user.username):
+				if username == request.user.username:
 					if pass1 != '' and pass1 == pass2:
 						request.user.set_password(pass1)
 						request.user.save()
@@ -175,15 +176,24 @@ def edit_password(request):
 	return render(request, 'user/edit_password.html', {'form': form, 'message': message})
 
 
-def ranking(request):
-	my_user_list_total = MyUser.objects.filter(accomplishments__gt=0 ).order_by('-accomplishments')
-	paginator = Paginator(my_user_list_total, 25)
-	page =  request.GET.get('page')
-	try:
-		my_user_list = paginator.page(page)
-	except PageNotAnInteger:
-		my_user_list = paginator.page(1)
-	except EmptyPage:
-		my_user_list = paginator.page(paginator.num_pages)
+def ranking(request, shortname):
+	
+	try:	
+		group = Group.objects.get(shortname=shortname)
+	except Group.DoesNotExist:
+		return HttpResponseRedirect('/problems/groups/')
+		
+	request.session['group'] = shortname
 
-	return render(request, 'user/ranking.html', {'my_user_list': my_user_list})
+	list_total = Ranking.objects.filter(group=group).order_by('-did')
+	
+	paginator = Paginator(list_total, 25)
+	page = request.GET.get('page')
+	try:
+		my_list = paginator.page(page)
+	except PageNotAnInteger:
+		my_list = paginator.page(1)
+	except EmptyPage:
+		my_list = paginator.page(paginator.num_pages)
+
+	return render(request, 'user/ranking.html', {'my_list': my_list, 'group': group})

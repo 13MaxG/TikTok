@@ -15,35 +15,20 @@
 
         {% if user.is_authenticated %}
         <a href="{% url 'user:detail' user.id  %}"> <div class="menuItemRight"> Konto</div> </a>
-        <a href="{% url 'submits:index'  %}"> <div class="menuItemRight"> Zgłoszenia</div> </a>
+        <a href="{% url 'submits:index'   %}"> <div class="menuItemRight"> Zgłoszenia</div> </a>
         {% else %}
         <a href="{% url 'user:login'  %}"> <div class="menuItemRight"> Logowanie</div> </a>
         <a href="{% url 'user:register'  %}"> <div class="menuItemRight"> Rejestracja</div> </a>
         {% endif %}
 
-        <a href="{% url 'user:ranking'  %}"> <div class="menuItemRight"> Ranking</div> </a>
-        <a href="{% url 'problems:index'  %}"> <div class="menuItemRight"> Problemy</div> </a>
+        <a href="{% url 'user:ranking' request.session.group|default:'MAIN' %}"> <div class="menuItemRight"> Ranking</div> </a>
+        <a href="{% url 'problems:index'  request.session.group|default:'MAIN' %}"> <div class="menuItemRight"> Problemy</div> </a>
+		
+		<a href="{% url 'problems:groups' %}"> <div class="menuItemRight"> {{ request.session.group|default:"MAIN" }}</div> </a>
 
 
     </div>
 
-    <!--
-	<a href="javascript:history.back()">Wróć</a><br />
- {% block bonusAction %}{% endblock %}
-<br /> 
-<a href="{% url 'news:index'  %}">Wiadomości</a> <br />
-<a href="{% url 'problems:index'  %}">Problemy</a> <br />
-<a href="{% url 'user:ranking'  %}">Ranking</a><br />
-{% if user.is_authenticated %} 
-<a href="{% url 'submits:index'  %}">Zgłoszenia</a>   <br />
-<a href="{% url 'user:index'  %}">Konto użytkownika</a>   <br />
-<a href="{% url 'user:logout'  %}">Wyloguj</a> 
-{% else %}
-<a href="{% url 'user:login'  %}">Logowanie</a>   <br />
-<a href="{% url 'user:register'  %}">Rejestracja</a>   <br />
-{% endif %}
-
--->
 </div>
 
 <div id="content">

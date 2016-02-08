@@ -1,6 +1,6 @@
 from .models import Submit
-from problems.models import TestProgram
-from user.models import MyUser
+from problems.models import TestProgram, Group, Problem
+from user.models import MyUser, Ranking
 
 from subprocess import Popen, PIPE
 from re import findall
@@ -15,7 +15,6 @@ def execute():
 
 	try:
 		subs = Submit.objects.filter(executed=False)
-
 		if len(subs) == 0:
 			return
 
@@ -29,7 +28,7 @@ def execute():
 			p.comment = ""
 			tests = TestProgram.objects.filter(problem=p.problem)
 
-			legit = isMathematicaCodeLegit(p.code)
+			legit = is_mathematica_code_legit(p.code)
 			
 			accomplishments = 0
 			
@@ -75,7 +74,7 @@ def execute():
 			p.executed = True
 			p.save()
 
-			updateStats(p)
+			update_stats(p.user, p.problem)
 			
 	except:
 		global executing
@@ -85,34 +84,54 @@ def execute():
 	executing = False
 
 	execute()
-	
-def updateStats(p):
-	submits_accomplishments = Submit.objects.filter(accomplishment=True, user=p.user)
+
+
+def update_stats(user, problem):
+	# MY_USER STATS
+	submits_accomplishments = Submit.objects.filter(accomplishment=True, user=user)
 	seen = set()
 	seen_add = seen.add
 	problems_accomplishments = [x.problem for x in submits_accomplishments if not (x.problem in seen or seen_add(x.problem))]
-	my_user = MyUser.objects.get(user=p.user)
+	my_user = MyUser.objects.get(user=user)
 	my_user.accomplishments = len(problems_accomplishments)
 
 	my_user.save()
 
-
-	submits_accomplishments = Submit.objects.filter(problem=p.problem, accomplishment=True)
+	# PROBLEM STATS
+	submits_accomplishments = Submit.objects.filter(problem=problem, accomplishment=True)
 	seen = set()
 	seen_add = seen.add
 	users_accomplishments = [x.user for x in submits_accomplishments if not (x.user in seen or seen_add(x.user))]
-	submits_total = Submit.objects.filter(problem=p.problem)
+	submits_total = Submit.objects.filter(problem=problem)
 	seen2 = set()
 	seen2_add = seen2.add
 	users_total = [x.user for x in submits_total if not (x.user in seen2 or seen2_add(x.user))]
 
-	p.problem.users_did = len(users_accomplishments)
-	p.problem.users_total = len(users_total)
-	p.problem.save()
+	problem.users_did = len(users_accomplishments)
+	problem.users_total = len(users_total)
+	problem.save()
 	
-def isMathematicaCodeLegit(code):
-	list = ['kupa', 'pupa']
-	for word in list:
+	# GROUP STATS
+	submits_accomplishments = Submit.objects.filter(accomplishment=True, user=user)
+	seen = set()
+	seen_add = seen.add
+	problems_accomplishments = [x.problem for x in submits_accomplishments if x.problem.group == problem.group and not (x.problem in seen or seen_add(x.problem))]
+	
+	my_user = MyUser.objects.get(user=user)
+	try:
+		ranking = Ranking.objects.get(my_user=my_user, group=problem.group)
+		ranking.did = len(problems_accomplishments)
+		ranking.save()
+	except Ranking.DoesNotExist:
+		if len(problems_accomplishments) > 0:
+			ranking = Ranking(my_user=my_user, group=problem.group, did=0)
+			ranking.did = len(problems_accomplishments)
+			ranking.save()
+
+
+def is_mathematica_code_legit(code):
+	keywords = ['kupa', 'pupa']
+	for word in keywords:
 		if word in code:
 			return False
 	return True

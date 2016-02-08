@@ -12,5 +12,5 @@ urlpatterns = [
 	url(r'^(?P<user_id>[0-9]+)/detail', views.detail, name='detail'),
 	url(r'edit$', views.edit, name='edit'),
 	url(r'edit_password$', views.edit_password, name='edit_password'),
-	url(r'ranking', views.ranking, name='ranking'),
+	url(r'ranking/(?P<shortname>[0-9a-zA-Z]+)', views.ranking, name='ranking'),
 ]

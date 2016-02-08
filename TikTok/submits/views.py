@@ -27,12 +27,12 @@ def index(request):
 
 def detail(request, submit_id):
 	if not request.user.is_authenticated():
-		return HttpResponseRedirect( '/user/')
+		return HttpResponseRedirect('/user/')
 
 	try:
 		submit = Submit.objects.get(id=submit_id)
 	except Submit.DoesNotExist:
-		return HttpResponseRedirect( '/submits/')
+		return HttpResponseRedirect('/submits/')
 
 	if not (submit.user == request.user or request.user.is_staff):
 		return HttpResponse("Brak uprawnień")
@@ -41,4 +41,3 @@ def detail(request, submit_id):
 
 	execute()
 	return render(request, 'submits/detail.html', context)
-

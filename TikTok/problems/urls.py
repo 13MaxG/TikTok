@@ -3,7 +3,7 @@ from django.conf.urls import url
 from . import views
 app_name = 'problems'
 urlpatterns = [
-	url(r'^$', views.index, name='index'),
+	url(r'^list/(?P<shortname>[0-9a-zA-Z]+)/$', views.index, name='index'),
 	url(r'^(?P<problem_id>[0-9]+)/$', views.detail, name='detail'),
 	url(r'^(?P<problem_id>[0-9]+)/submit$', views.submit, name='submit'),
 	url(r'^(?P<problem_id>[0-9]+)/comments$', views.comments, name='comments'),
@@ -17,6 +17,9 @@ urlpatterns = [
 	url(r'^(?P<problem_id>[0-9]+)/edit_name', views.edit_name, name='edit_name'),
 	url(r'^(?P<problem_id>[0-9]+)/edit_pdf', views.edit_pdf, name='edit_pdf'),
 	url(r'^(?P<problem_id>[0-9]+)/show_submits', views.show_submits, name='show_submits'),
-	url('create', views.create, name='create'),
-
+	url(r'^create/', views.create, name='create'),
+	url(r'create_group', views.create_group, name='create_group'),
+	url(r'groups', views.groups, name='groups'),
+	url(r'set_active_group/(?P<group_shortname>[0-9a-zA-Z]+)', views.set_active_group, name='set_active_group'),
+	url(r'delete_group/(?P<shortname>[0-9a-zA-Z]+)', views.delete_group, name='delete_group'),
 ]

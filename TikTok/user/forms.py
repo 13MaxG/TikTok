@@ -13,7 +13,7 @@ class RegisterForm(forms.Form):
 	password2 = forms.CharField(label='powtórz hasło', widget=forms.PasswordInput())
 	first_name = forms.CharField(label='Imię', max_length=100, required=False)
 	last_name = forms.CharField(label='Nazwisko', max_length=100, required=False)
-	motto = forms.CharField(label='Powiedzonko', widget=forms.Textarea, max_length=140)
+	motto = forms.CharField(label='Powiedzonko', widget=forms.Textarea, max_length=140, required=False)
 
 
 class EditForm(forms.Form):
@@ -21,7 +21,8 @@ class EditForm(forms.Form):
 	email = forms.EmailField(label='email', max_length=100)
 	first_name = forms.CharField(label='Imię', max_length=100, required=False)
 	last_name = forms.CharField(label='Nazwisko', max_length=100, required=False)
-	motto = forms.CharField(label='Powiedzonko', widget=forms.Textarea, max_length=140)
+	motto = forms.CharField(label='Powiedzonko', widget=forms.Textarea, max_length=140,required=False)
+
 
 class EditPasswordForm(forms.Form):
 	password0 = forms.CharField(label='stare hasło', widget=forms.PasswordInput())

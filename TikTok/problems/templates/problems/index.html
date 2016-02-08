@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}Lista problemów{% endblock %}
-{% block header %}Lista problemów{% endblock %}
+{% block title %} {{ group.name }}{% endblock %}
+{% block header %} {{ group.name }} {% endblock %}
 
 
 
@@ -37,7 +37,8 @@
 <hr />
 <h2>Administracja</h2>
 <p>
-<a href="{% url 'problems:create'  %}">Dodaj problem</a>
+<a href="{% url 'problems:create'  %}">Dodaj problem</a> <br />
+<a href="{% url 'problems:delete_group' request.session.group %}">Usuń konkurs</a>
 </p>
 
 {% endif %}

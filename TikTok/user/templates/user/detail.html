@@ -24,7 +24,7 @@ Rozwiązane zadania ({{ problems_accomplishments|length }}):
 </p>
 <ul>
 {% for problem in problems_accomplishments %}
-    <li><a href="{% url 'problems:detail' problem.id %}">{{ problem.name }} </a></li>
+    <li><a href="{% url 'problems:detail' problem.id %}">{{ problem.group.shortname}}: {{problem.name }} </a></li>
 {% endfor %}
 </ul>
 
@@ -34,7 +34,7 @@ Trwają zmagania ({{ problems_tried|length }}):
 </p>
 <ul>
 {% for problem in problems_tried %}
-    <li><a href="{% url 'problems:detail' problem.id %}">{{ problem.name }} </a></li>
+    <li><a href="{% url 'problems:detail' problem.id %}">{{ problem.group.shortname}}: {{ problem.name }} </a></li>
 {% endfor %}
 </ul>
 

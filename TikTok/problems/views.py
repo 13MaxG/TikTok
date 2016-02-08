@@ -5,15 +5,26 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-
 from submits.executer import execute
 from submits.models import Submit
-from .forms import CommentForm, SubmitForm, CreateForm, TestProgramForm, DeletionForm, EditNameForm, EditPDFForm
-from .models import Problem, Comment, TestProgram
+from user.models import MyUser, Ranking
+
+from .forms import CommentForm, SubmitForm, CreateForm, TestProgramForm, DeletionForm, EditNameForm, EditPDFForm, CreateGroupForm
+from .models import Group, Problem, Comment, TestProgram
 
 
-def index(request):
-	problems_list_total = Problem.objects.order_by('pub_date')
+def index(request, shortname):
+	# shortname = "MAIN";
+	# if request.session['group'] != "":
+	# shortname = request.session['group']
+	try:	
+		group = Group.objects.get(shortname=shortname)
+	except Group.DoesNotExist:
+		return HttpResponseRedirect('/problems/groups/')
+		
+	request.session['group']  = shortname
+	
+	problems_list_total = Problem.objects.filter(group=group).order_by('pub_date')
 
 	paginator = Paginator(problems_list_total, 25)
 	page = request.GET.get('page')
@@ -24,20 +35,46 @@ def index(request):
 	except EmptyPage:
 		problems_list = paginator.page(paginator.num_pages)
 
-	return render(request, 'problems/index.html', {'problems_list': problems_list})
+	return render(request, 'problems/index.html', {'problems_list': problems_list, 'group': group})
+
+	
+def groups(request):
+	main = Group.objects.all()[0]
+	
+	group_list_total = list(Group.objects.all().order_by('-pub_date'))
+	group_list_total.remove(main)
+	paginator = Paginator(group_list_total, 25)
+	page = request.GET.get('page')
+	try:
+		groups_list = paginator.page(page)
+	except PageNotAnInteger:
+		groups_list = paginator.page(1)
+	except EmptyPage:
+		groups_list = paginator.page(paginator.num_pages)
+
+	return render(request, 'problems/groups.html', {'groups_list': groups_list, 'main': main})
 
 
+def set_active_group(request, group_shortname):
+	request.session['group'] = group_shortname
+	return HttpResponseRedirect('/problems/list/'+group_shortname+'/')
+
+	
 def detail(request, problem_id):
 	try:
 		problem = Problem.objects.get(id=problem_id)
 	except Problem.DoesNotExist:
 		return HttpResponse("Nie istnieje taki problem")
 
+	group = Group.objects.get(problem=problem)
+	request.session['group'] = group.shortname
+
 	tests = TestProgram.objects.filter(problem=problem)
 	list_of_comments = Comment.objects.filter(problem=problem)
 	context = {'problem': problem, 'tests': tests, 'comments_num': len(list_of_comments)}
 	return render(request, 'problems/detail.html', context)
 
+	
 def comments(request, problem_id):
 	try:
 		problem = Problem.objects.get(id=problem_id)
@@ -56,8 +93,7 @@ def comments(request, problem_id):
 	except EmptyPage:
 		comment_list = paginator.page(paginator.num_pages)
 
-
-	context = {'problem': problem, 'comment_list': comment_list, 'form':form}
+	context = {'problem': problem, 'comment_list': comment_list, 'form': form}
 	return render(request, 'problems/comments.html', context)
 
 
@@ -114,11 +150,43 @@ def download(request, problem_id):
 		return HttpResponse(request, "Nie istnieje taki problem")
 
 
+def create_group(request):
+	if not request.user.is_authenticated():
+		return HttpResponseRedirect('/user/')
+	if not request.user.is_staff:
+		return HttpResponse("Brak uprawnień")
+
+	message = ''
+	form = CreateGroupForm()
+	if request.method == 'POST':
+		form = CreateGroupForm(request.POST)
+		if form.is_valid():
+			group = Group(name=form.cleaned_data['name'], shortname=form.cleaned_data['shortname'], pub_date=timezone.now())
+			group.save()
+			request.session['group'] = group.shortname
+			return HttpResponseRedirect('/problems/list/' + group.shortname)
+		else:
+			form = CreateForm()
+			message = "chyba coś się stało źle"
+	context = {'form': form, 'message': message}
+	return render(request, 'problems/create_group.html', context)
+
+	
 def create(request):
 	if not request.user.is_authenticated():
 		return HttpResponseRedirect('/user/')
 	if not request.user.is_staff:
 		return HttpResponse("Brak uprawnień")
+		
+	shortname = "MAIN"
+	if request.session['group'] != "":
+		shortname = request.session['group']
+
+	try:	
+		group = Group.objects.get(shortname=shortname)
+	except Group.DoesNotExist:
+		return HttpResponseRedirect('/problems/groups/')
+		
 	message = ''
 	form = CreateForm()
 	if request.method == 'POST':
@@ -139,13 +207,15 @@ def create(request):
 				for chunk in my_file.chunks():
 					destination.write(chunk)
 
-			prob = Problem(name=form.cleaned_data['name'], user=request.user, pub_date=timezone.now(), pdf_file_link=filename)
+			prob = Problem(group=group, name=form.cleaned_data['name'], user=request.user, pub_date=timezone.now(), pdf_file_link=filename)
 			prob.save()
-			return HttpResponseRedirect('/problems')
+			group.problems = len(Problem.objects.filter(group=group))
+			group.save()
+			return HttpResponseRedirect('/problems/list/'+group.shortname)
 		else:
 			form = CreateForm()
 			message = "chyba coś się stało źle"
-	context = {'form': form, 'message': message}
+	context = {'form': form, 'message': message, 'group': group}
 	return render(request, 'problems/create.html', context)
 
 
@@ -227,8 +297,10 @@ def delete_problem(request, problem_id):
 		form = DeletionForm(request.POST)
 		if form.is_valid():
 			if form.cleaned_data['name'] == problem.name:
+				shortname = problem.group.shortname
 				problem.delete()
-				return HttpResponseRedirect('/problems/')
+				
+				return HttpResponseRedirect('/problems/list/'+shortname)
 			else:
 				return HttpResponse("Błąd potwierdzenia")
 		else:
@@ -236,6 +308,35 @@ def delete_problem(request, problem_id):
 	else:
 		form = DeletionForm()
 	return render(request, 'problems/delete_problem.html', {'problem': problem, 'form': form})
+
+	
+def delete_group(request, shortname):
+	if not request.user.is_authenticated():
+		return HttpResponseRedirect('/user/')
+	if not request.user.is_staff:
+		return HttpResponse("Brak uprawnień")
+		
+	try:
+		group = Group.objects.get(shortname=shortname)
+	except Group.DoesNotExist:
+		return HttpResponse("Nie istnieje taki konkurs")
+
+	if shortname == 'MAIN':
+		return HttpResponse("Nie można usunąć głównego konkursu")
+	if request.method == 'POST':
+		form = DeletionForm(request.POST)
+		if form.is_valid():
+			if form.cleaned_data['name'] == group.name:
+				group.delete()
+				request.session['group'] = 'MAIN'
+				return HttpResponseRedirect('/problems/groups/')
+			else:
+				return HttpResponse("Błąd potwierdzenia")
+		else:
+			return HttpResponse("Błąd potwierdzenia")
+	else:
+		form = DeletionForm()
+	return render(request, 'problems/delete_group.html', {'group': group, 'form': form})
 
 
 def edit_name(request, problem_id):
@@ -302,7 +403,6 @@ def show_submits(request, problem_id):
 	if not request.user.is_authenticated():
 		return HttpResponseRedirect('/user/')
 
-
 	try:
 		problem = Problem.objects.get(id=problem_id)
 	except TestProgram.DoesNotExist:
@@ -311,7 +411,7 @@ def show_submits(request, problem_id):
 	if request.user.is_staff:
 		submits_list_total = Submit.objects.filter(problem=problem).order_by('-pub_date')
 	else:
-		submits_list_total = Submit.objects.filter(problem=problem,user=request.user).order_by('-pub_date')
+		submits_list_total = Submit.objects.filter(problem=problem, user=request.user).order_by('-pub_date')
 
 	paginator = Paginator(submits_list_total, 25)
 	page = request.GET.get('page')

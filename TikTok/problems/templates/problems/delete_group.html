@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Usuwanie konkursu{% endblock %}
+{% block header %}Usuwanie konkursu{% endblock %}
+
+
+
+{% block bonusAction %}
+
+
+{% endblock %}
+
+
+{% block content %}
+Zamierzasz usunąć konkurs.
+Usuniesz  {{group.problems}} problemów. Jesteś pewien? Przepisz nazwę konkursu.
+{{message}}
+<form enctype="multipart/form-data"  action="{% url 'problems:delete_group' group.shortname %}" method="post">
+{% csrf_token %}
+    <table>{{ form.as_table }}</table>
+<br />
+<input type="submit" value="Usuń" />
+</form>
+{% endblock %}
+
+
+
