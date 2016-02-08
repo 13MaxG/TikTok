@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 if __name__ == '__main__':
-	x = Group(name=u'Główny zbiór zadań', shortname="MAIN9", pub_date = timezone.now())
+	x = Group(name=u'Główny zbiór zadań', shortname="MAIN", pub_date = timezone.now())
 	x.save()
 
 	admin = MyUser(user=User.objects.all()[0])
