@@ -161,10 +161,15 @@ def create_group(request):
 	if request.method == 'POST':
 		form = CreateGroupForm(request.POST)
 		if form.is_valid():
-			group = Group(name=form.cleaned_data['name'], shortname=form.cleaned_data['shortname'], pub_date=timezone.now())
-			group.save()
-			request.session['group'] = group.shortname
-			return HttpResponseRedirect('/problems/list/' + group.shortname)
+		
+			try:
+				collision  = Group.objects.get(shortname=form.cleaned_data['shortname'])
+				return HttpResponse("Nie można utworzyć dwóch konkursów o takim samym skrócie")
+			except Group.DoesNotExist:
+				group = Group(name=form.cleaned_data['name'], shortname=form.cleaned_data['shortname'], pub_date=timezone.now())
+				group.save()
+				request.session['group'] = group.shortname
+				return HttpResponseRedirect('/problems/list/' + group.shortname)
 		else:
 			form = CreateForm()
 			message = "chyba coś się stało źle"
