@@ -1,5 +1,5 @@
 from threading import Thread
-
+from os import path, makedirs
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.utils import timezone
@@ -207,6 +207,10 @@ def create(request):
 				next_id = last.id + 1
 
 			my_file = request.FILES['pdf_file']
+			
+			if not path.exists('problems/pdf'):
+				makedirs('problems/pdf')
+			
 			filename = 'problems/pdf/problem' + str(next_id) + '.pdf'
 			with open(filename, 'wb+') as destination:
 				for chunk in my_file.chunks():
