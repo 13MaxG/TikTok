@@ -38,6 +38,7 @@
 <h2>Administracja</h2>
 <p>
 <a href="{% url 'problems:create'  %}">Dodaj problem</a> <br />
+<a href="{% url 'problems:edit_group' request.session.group %}">Edytuj konkurs</a> <br />
 <a href="{% url 'problems:delete_group' request.session.group %}">Usuń konkurs</a>
 </p>
 

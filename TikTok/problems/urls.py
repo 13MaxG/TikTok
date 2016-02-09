@@ -22,4 +22,5 @@ urlpatterns = [
 	url(r'groups', views.groups, name='groups'),
 	url(r'set_active_group/(?P<group_shortname>[0-9a-zA-Z]+)', views.set_active_group, name='set_active_group'),
 	url(r'delete_group/(?P<shortname>[0-9a-zA-Z]+)', views.delete_group, name='delete_group'),
+	url(r'edit_group/(?P<shortname>[0-9a-zA-Z]+)', views.edit_group, name='edit_group'),
 ]

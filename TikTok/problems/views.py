@@ -150,6 +150,39 @@ def download(request, problem_id):
 		return HttpResponse(request, "Nie istnieje taki problem")
 
 
+def edit_group(request, shortname):		
+	if not request.user.is_authenticated():
+		return HttpResponseRedirect('/user/')
+	if not request.user.is_staff:
+		return HttpResponse("Brak uprawnień")
+		
+	try:
+		group = Group.objects.get(shortname=shortname)
+	except Group.DoesNotExist:
+		return HttpResponse("Nie istnieje taki konkurs")
+		
+	message = ''
+	form =  CreateGroupForm({'name': group.name, 'shortname': group.shortname})
+	
+	if request.method == 'POST':
+		form = CreateGroupForm(request.POST)
+		if form.is_valid():
+			group.name = form.cleaned_data['name']
+			
+			if group.shortname == 'MAIN' and form.cleaned_data['shortname'] != group.shortname:
+				return HttpResponse("Nie można zmienić skrótu konkursu MAIN")
+				
+			group.shortname = form.cleaned_data['shortname']
+			group.save()
+			request.session['group'] = group.shortname
+			return HttpResponseRedirect('/problems/list/' + group.shortname)
+		else:
+			form = CreateGroupForm()
+			message = "chyba coś się stało źle"
+	context = {'form': form, 'message': message, 'group': group}
+	return render(request, 'problems/edit_group.html', context)
+		
+
 def create_group(request):
 	if not request.user.is_authenticated():
 		return HttpResponseRedirect('/user/')
@@ -171,7 +204,7 @@ def create_group(request):
 				request.session['group'] = group.shortname
 				return HttpResponseRedirect('/problems/list/' + group.shortname)
 		else:
-			form = CreateForm()
+			form = CreateGroupForm()
 			message = "chyba coś się stało źle"
 	context = {'form': form, 'message': message}
 	return render(request, 'problems/create_group.html', context)
