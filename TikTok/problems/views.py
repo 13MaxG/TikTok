@@ -1,5 +1,6 @@
 from threading import Thread
 from os import path, makedirs
+from re import compile
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.utils import timezone
@@ -167,6 +168,10 @@ def edit_group(request, shortname):
 	if request.method == 'POST':
 		form = CreateGroupForm(request.POST)
 		if form.is_valid():
+			pattern = compile('^[a-zA-Z0-9]+$')
+			if not pattern.match(form.cleaned_data['shortname']):
+				return HttpResponse("Niewłaściwa nazwa skrótu konkursu.")
+				
 			group.name = form.cleaned_data['name']
 			
 			if group.shortname == 'MAIN' and form.cleaned_data['shortname'] != group.shortname:
@@ -194,7 +199,10 @@ def create_group(request):
 	if request.method == 'POST':
 		form = CreateGroupForm(request.POST)
 		if form.is_valid():
-		
+			pattern = compile('^[a-zA-Z0-9]+$')
+			if not pattern.match(form.cleaned_data['shortname']):
+				return HttpResponse("Niewłaściwa nazwa skrótu konkursu.")
+				
 			try:
 				collision  = Group.objects.get(shortname=form.cleaned_data['shortname'])
 				return HttpResponse("Nie można utworzyć dwóch konkursów o takim samym skrócie")
