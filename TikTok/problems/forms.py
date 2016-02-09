@@ -4,7 +4,11 @@ from django import forms
 class CommentForm(forms.Form):
 	content = forms.CharField(label='Treść', widget=forms.Textarea)
 
+	
+class GetPrivilegeForm(forms.Form):
+	hash = forms.CharField(label='Kod dostępu', widget=forms.Textarea)
 
+	
 class SubmitForm(forms.Form):
 	code = forms.CharField(label='Kod', widget=forms.Textarea)
 
@@ -17,6 +21,7 @@ class CreateForm(forms.Form):
 class CreateGroupForm(forms.Form):
 	name = forms.CharField(label='Nazwa', max_length=100)
 	shortname = forms.CharField(label='Skrót', max_length=100)
+	open = forms.BooleanField (label='Dostęp otwarty', initial=True, required=False)
 
 
 class TestProgramForm(forms.Form):

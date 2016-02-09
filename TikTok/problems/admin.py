@@ -1,13 +1,17 @@
 from django.contrib import admin
-from .models import Group, Problem, Comment, TestProgram
+from .models import Group, Problem, Comment, TestProgram, Privilege
 
 
 class GroupAdmin(admin.ModelAdmin):
-	list_display = ('name', 'shortname')
-	list_filter = ['name','shortname', 'pub_date']
+	list_display = ('name', 'shortname', 'open')
+	list_filter = ['name','shortname', 'pub_date', 'open']
 	search_fields = ['name']
 admin.site.register(Group, GroupAdmin)
 
+
+class PrivilegeAdmin(admin.ModelAdmin):
+	list_display = ('group', 'user', 'hash', 'sent')
+admin.site.register(Privilege, PrivilegeAdmin)
 
 class ProblemAdmin(admin.ModelAdmin):
 	list_display = ( 'name', 'group', 'user', 'pub_date', 'users_total', 'users_did')

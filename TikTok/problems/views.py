@@ -1,6 +1,7 @@
 from threading import Thread
 from os import path, makedirs
 from re import compile
+from uuid import uuid4
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.utils import timezone
@@ -9,9 +10,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from submits.executer import execute
 from submits.models import Submit
 from user.models import MyUser, Ranking
-
-from .forms import CommentForm, SubmitForm, CreateForm, TestProgramForm, DeletionForm, EditNameForm, EditPDFForm, CreateGroupForm
-from .models import Group, Problem, Comment, TestProgram
+from user.views import check_user,check_admin,check_user_priviledge
+from .forms import CommentForm, SubmitForm, CreateForm, TestProgramForm, DeletionForm, EditNameForm, EditPDFForm, CreateGroupForm, GetPrivilegeForm
+from .models import Group, Problem, Comment, TestProgram, Privilege
 
 
 def index(request, shortname):
@@ -24,6 +25,10 @@ def index(request, shortname):
 		return HttpResponseRedirect('/problems/groups/')
 		
 	request.session['group']  = shortname
+	
+	tmp = check_user_priviledge(request, group)
+	if tmp != True:
+		return tmp
 	
 	problems_list_total = Problem.objects.filter(group=group).order_by('pub_date')
 
@@ -38,6 +43,44 @@ def index(request, shortname):
 
 	return render(request, 'problems/index.html', {'problems_list': problems_list, 'group': group})
 
+def get_privilege(request, shortname):
+	try:	
+		group = Group.objects.get(shortname=shortname)
+	except Group.DoesNotExist:
+		return HttpResponseRedirect('/problems/groups/')
+		
+	if group.open:
+		return HttpResponse("Konkurs jest dostępny")
+		
+	request.session['group']  = shortname
+	
+	tmp = check_user(request)
+	if tmp != True:
+		return tmp
+		
+	
+	form = GetPrivilegeForm()
+	message=''
+	if request.method == 'POST':
+		form = GetPrivilegeForm(request.POST)
+		if form.is_valid():
+			hash = form.cleaned_data['hash']
+			if hash != '---':
+				try:
+					privilege = Privilege.objects.get(group=group, hash=hash)
+					privilege.user = request.user
+					privilege.hash = '---'
+					privilege.save()
+					return HttpResponseRedirect('/problems/list/%s/' % group.shortname)
+				except Privilege.DoesNotExist:
+					message = 'Niepoprawny kod dostępu'
+
+		else:
+			form = GetPrivilegeForm()
+			message = "Błąd w formularzu"
+			
+			
+	return render(request, 'problems/get_privilege.html', {'message': message, 'group': group, 'form': form})
 	
 def groups(request):
 	main = Group.objects.all()[0]
@@ -69,6 +112,10 @@ def detail(request, problem_id):
 
 	group = Group.objects.get(problem=problem)
 	request.session['group'] = group.shortname
+	
+	tmp = check_user_priviledge(request, group)
+	if tmp != True:
+		return tmp
 
 	tests = TestProgram.objects.filter(problem=problem)
 	list_of_comments = Comment.objects.filter(problem=problem)
@@ -82,6 +129,10 @@ def comments(request, problem_id):
 	except Problem.DoesNotExist:
 		return HttpResponse("Nie istnieje taki problem")
 
+	tmp = check_user_priviledge(request, problem.group)
+	if tmp != True:
+		return tmp
+		
 	comments_list_total = Comment.objects.filter(problem=problem)
 	form = CommentForm()
 
@@ -99,11 +150,15 @@ def comments(request, problem_id):
 
 
 def comment(request, problem_id):
-	if not request.user.is_authenticated():
-		return HttpResponseRedirect('/user/')
+	
 	message = ''
 	form = CommentForm()
 	problem = Problem.objects.get(id=problem_id)
+	
+	tmp = check_user_priviledge(request, problem.group)
+	if tmp != True:
+		return tmp
+		
 	if request.method == 'POST':
 		form = CommentForm(request.POST)
 		if form.is_valid():
@@ -125,6 +180,12 @@ def submit(request, problem_id):
 
 	form = SubmitForm()
 	problem = Problem.objects.get(id=problem_id)
+	
+	tmp = check_user_priviledge(request, problem.group)
+	if tmp != True:
+		return tmp
+		
+		
 	if request.method == 'POST':
 		form = SubmitForm(request.POST)
 		if form.is_valid():
@@ -144,6 +205,11 @@ def submit(request, problem_id):
 def download(request, problem_id):
 	try:
 		problem = Problem.objects.get(id=problem_id)
+		
+		tmp = check_user_priviledge(request, problem.group)
+		if tmp != True:
+			return tmp
+		
 		file = open(problem.pdf_file_link, 'rb')
 		response = HttpResponse(file, content_type='application/pdf')
 		return response
@@ -151,19 +217,18 @@ def download(request, problem_id):
 		return HttpResponse(request, "Nie istnieje taki problem")
 
 
-def edit_group(request, shortname):		
-	if not request.user.is_authenticated():
-		return HttpResponseRedirect('/user/')
-	if not request.user.is_staff:
-		return HttpResponse("Brak uprawnień")
-		
+def edit_group(request, shortname):				
 	try:
 		group = Group.objects.get(shortname=shortname)
 	except Group.DoesNotExist:
 		return HttpResponse("Nie istnieje taki konkurs")
-		
+	
+	tmp = check_admin(request)
+	if tmp != True:
+		return tmp	
+	
 	message = ''
-	form =  CreateGroupForm({'name': group.name, 'shortname': group.shortname})
+	form =  CreateGroupForm({'name': group.name, 'shortname': group.shortname, 'open':group.open})
 	
 	if request.method == 'POST':
 		form = CreateGroupForm(request.POST)
@@ -174,10 +239,12 @@ def edit_group(request, shortname):
 				
 			group.name = form.cleaned_data['name']
 			
-			if group.shortname == 'MAIN' and form.cleaned_data['shortname'] != group.shortname:
-				return HttpResponse("Nie można zmienić skrótu konkursu MAIN")
+			if group.shortname == 'MAIN' and (form.cleaned_data['shortname'] != group.shortname or (form.cleaned_data['name']=="True") != group.open):
+				return HttpResponse("Nie można zmienić skrótu konkursu MAIN lub jego dostępności")
 				
 			group.shortname = form.cleaned_data['shortname']
+			group.open = (form.cleaned_data['name']=="True")
+			
 			group.save()
 			request.session['group'] = group.shortname
 			return HttpResponseRedirect('/problems/list/' + group.shortname)
@@ -189,10 +256,9 @@ def edit_group(request, shortname):
 		
 
 def create_group(request):
-	if not request.user.is_authenticated():
-		return HttpResponseRedirect('/user/')
-	if not request.user.is_staff:
-		return HttpResponse("Brak uprawnień")
+	tmp = check_admin(request)
+	if tmp != True:
+		return tmp
 
 	message = ''
 	form = CreateGroupForm()
@@ -208,6 +274,8 @@ def create_group(request):
 				return HttpResponse("Nie można utworzyć dwóch konkursów o takim samym skrócie")
 			except Group.DoesNotExist:
 				group = Group(name=form.cleaned_data['name'], shortname=form.cleaned_data['shortname'], pub_date=timezone.now())
+				group.open = (form.cleaned_data['name']=="True")
+				
 				group.save()
 				request.session['group'] = group.shortname
 				return HttpResponseRedirect('/problems/list/' + group.shortname)
@@ -219,10 +287,9 @@ def create_group(request):
 
 	
 def create(request):
-	if not request.user.is_authenticated():
-		return HttpResponseRedirect('/user/')
-	if not request.user.is_staff:
-		return HttpResponse("Brak uprawnień")
+	tmp = check_admin(request)
+	if tmp != True:
+		return tmp
 		
 	shortname = "MAIN"
 	if request.session['group'] != "":
@@ -276,10 +343,9 @@ def create(request):
 
 
 def add_test(request, problem_id):
-	if not request.user.is_authenticated():
-		return HttpResponseRedirect('/user/')
-	if not request.user.is_staff:
-		return HttpResponse("Brak uprawnień")
+	tmp = check_admin(request)
+	if tmp != True:
+		return tmp	
 
 	try:
 		problem = Problem.objects.get(id=problem_id)
@@ -299,12 +365,32 @@ def add_test(request, problem_id):
 			form = TestProgramForm()
 	return render(request, 'problems/add_test.html', {'problem': problem, 'form': form})
 
+def privileges(request, shortname):		
+	tmp = check_admin(request)
+	if tmp != True:
+		return tmp		
+		
+	try:
+		group = Group.objects.get(shortname=shortname)
+	except Group.DoesNotExist:
+		return HttpResponse("Nie istnieje taki konkurs")
+		
+	message = ''
+	privileges_list = Privilege.objects.filter(group=group, sent=False).exclude(hash='---')
 
+	if request.method == 'POST':
+		privilege = Privilege(group = group, hash = uuid4().hex)
+		message="przywilej to: " + privilege.hash
+		privilege.save()
+
+	context = {'message': message, 'group': group, 'privileges_list': privileges_list}
+	return render(request, 'problems/privileges.html', context)
+		
+		
 def edit_test(request, test_id):
-	if not request.user.is_authenticated():
-		return HttpResponseRedirect('/user/')
-	if not request.user.is_staff:
-		return HttpResponse("Brak uprawnień")
+	tmp = check_admin(request)
+	if tmp != True:
+		return tmp		
 
 	try:
 		test_program = TestProgram.objects.get(id=test_id)
@@ -325,10 +411,10 @@ def edit_test(request, test_id):
 
 
 def delete_test(request, test_id):
-	if not request.user.is_authenticated():
-		return HttpResponseRedirect('/user/')
-	if not request.user.is_staff:
-		return HttpResponse("Brak uprawnień")
+	tmp = check_admin(request)
+	if tmp != True:
+		return tmp		
+		
 	try:
 		test_program = TestProgram.objects.get(id=test_id)
 		problem = test_program.problem
@@ -340,10 +426,10 @@ def delete_test(request, test_id):
 
 
 def delete_problem(request, problem_id):
-	if not request.user.is_authenticated():
-		return HttpResponseRedirect('/user/')
-	if not request.user.is_staff:
-		return HttpResponse("Brak uprawnień")
+	tmp = check_admin(request)
+	if tmp != True:
+		return tmp		
+		
 	try:
 		problem = Problem.objects.get(id=problem_id)
 	except TestProgram.DoesNotExist:
@@ -367,10 +453,9 @@ def delete_problem(request, problem_id):
 
 	
 def delete_group(request, shortname):
-	if not request.user.is_authenticated():
-		return HttpResponseRedirect('/user/')
-	if not request.user.is_staff:
-		return HttpResponse("Brak uprawnień")
+	tmp = check_admin(request)
+	if tmp != True:
+		return tmp		
 		
 	try:
 		group = Group.objects.get(shortname=shortname)
@@ -396,10 +481,10 @@ def delete_group(request, shortname):
 
 
 def edit_name(request, problem_id):
-	if not request.user.is_authenticated():
-		return HttpResponseRedirect('/user/')
-	if not request.user.is_staff:
-		return HttpResponse("Brak uprawnień")
+	tmp = check_admin(request)
+	if tmp != True:
+		return tmp	
+		
 	try:
 		problem = Problem.objects.get(id=problem_id)
 	except TestProgram.DoesNotExist:
@@ -422,10 +507,9 @@ def edit_name(request, problem_id):
 
 
 def edit_pdf(request, problem_id):
-	if not request.user.is_authenticated():
-		return HttpResponseRedirect('/user/')
-	if not request.user.is_staff:
-		return HttpResponse("Brak uprawnień")
+	tmp = check_admin(request)
+	if tmp != True:
+		return tmp	
 
 	try:
 		problem = Problem.objects.get(id=problem_id)
@@ -456,14 +540,16 @@ def edit_pdf(request, problem_id):
 
 
 def show_submits(request, problem_id):
-	if not request.user.is_authenticated():
-		return HttpResponseRedirect('/user/')
 
 	try:
 		problem = Problem.objects.get(id=problem_id)
 	except TestProgram.DoesNotExist:
 		return HttpResponse("Nie istnieje taki problem")
 
+	tmp = check_user_priviledge(request, problem.group)
+	if tmp != True:
+		return tmp
+		
 	if request.user.is_staff:
 		submits_list_total = Submit.objects.filter(problem=problem).order_by('-pub_date')
 	else:
@@ -479,3 +565,4 @@ def show_submits(request, problem_id):
 		submits_list = paginator.page(paginator.num_pages)
 
 	return render(request, 'problems/show_submits.html', {'problem': problem, 'submits_list': submits_list})
+

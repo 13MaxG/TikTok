@@ -12,7 +12,8 @@ from .forms import LoginForm, RegisterForm, EditForm, EditPasswordForm
 
 from .models import MyUser, Ranking
 from submits.models import Submit
-from problems.models import Group
+from problems.models import Group, Privilege
+
 
 def index(request):
 	if request.user.is_authenticated():
@@ -94,6 +95,7 @@ def detail(request, user_id):
 
 	my_user = MyUser.objects.get(user=user)
 
+	
 	submits_accomplishments = Submit.objects.filter(accomplishment=True, user=user)
 	seen = set()
 	seen_add = seen.add
@@ -182,7 +184,11 @@ def ranking(request, shortname):
 		group = Group.objects.get(shortname=shortname)
 	except Group.DoesNotExist:
 		return HttpResponseRedirect('/problems/groups/')
-		
+	
+	tmp = check_user_priviledge(request, group)
+	if tmp != True:
+		return tmp
+
 	request.session['group'] = shortname
 
 	list_total = Ranking.objects.filter(group=group).order_by('-did')
@@ -197,3 +203,27 @@ def ranking(request, shortname):
 		my_list = paginator.page(paginator.num_pages)
 
 	return render(request, 'user/ranking.html', {'my_list': my_list, 'group': group})
+
+	
+def check_user(request):
+	if not request.user.is_authenticated():
+		return HttpResponseRedirect('/user/')
+	return True
+
+		
+def check_admin(request):
+	if not request.user.is_staff:
+		return HttpResponse("Brak uprawnień")
+	return True
+		
+def check_user_priviledge(request, group):
+	tmp = check_user(request)
+	if tmp != True:
+		return tmp
+		
+	if not group.open and not request.user.is_staff:
+		try:
+			privilege = Privilege.objects.get(user=request.user, group=group)
+		except Privilege.DoesNotExist:
+			return HttpResponseRedirect('/problems/groups/'+group.shortname+'/get_privilege')
+	return True

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Przywileje {{group.name}}{% endblock %}
+{% block header %}Przywileje {{group.name}} {% endblock %}
+
+
+
+{% block bonusAction %}
+
+{% endblock %}
+
+
+{% block content %}
+
+{{message}}
+<form enctype="multipart/form-data"  action="{% url 'problems:privileges' group.shortname %}" method="post">
+{% csrf_token %}
+<input type="submit" value="Generuj nowy" />
+</form>
+
+{% if privileges_list %}
+    <ul>
+    {% for privilege in privileges_list %}
+        <li>{{privilege.hash}}	</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Brak wolnych przywilejów.</p>
+{% endif %}
+
+{% endblock %}
+
+
+

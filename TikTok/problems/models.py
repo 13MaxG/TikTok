@@ -7,11 +7,19 @@ class Group(models.Model):
 	shortname = models.CharField(default='', max_length=255, primary_key=True)
 	pub_date = models.DateTimeField('date published')
 	problems = models.IntegerField(default=0)
-
+	open = models.BooleanField(default=True)
+	
 	def __str__(self):
 		return self.shortname
 
-
+		
+class Privilege(models.Model):
+	group = models.ForeignKey(Group, on_delete=models.CASCADE)
+	user = models.ForeignKey(User, default=1, null=True)
+	hash = models.CharField(default='', max_length=255)
+	sent = models.BooleanField(default=False)
+	
+	
 class Problem(models.Model):
 	group = models.ForeignKey(Group, on_delete=models.CASCADE)
 	name = models.CharField(default='', max_length=255)

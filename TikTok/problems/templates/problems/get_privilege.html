@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Uzyskaj dostęp {{group.name}}{% endblock %}
+{% block header %}Uzyskaj dostęp {{group.name}} {% endblock %}
+
+
+
+{% block bonusAction %}
+
+{% endblock %}
+
+
+{% block content %}
+
+{{message}}
+<form enctype="multipart/form-data"  action="{% url 'problems:get_privilege' group.shortname %}" method="post">
+{% csrf_token %}
+ <table>{{ form.as_table }}</table>
+<input type="submit" value="Wyślij" />
+</form>
+
+
+{% endblock %}
+
+
+

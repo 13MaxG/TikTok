@@ -19,8 +19,10 @@ urlpatterns = [
 	url(r'^(?P<problem_id>[0-9]+)/show_submits', views.show_submits, name='show_submits'),
 	url(r'^create/', views.create, name='create'),
 	url(r'create_group', views.create_group, name='create_group'),
-	url(r'groups', views.groups, name='groups'),
+	url(r'groups[/]$', views.groups, name='groups'),
 	url(r'set_active_group/(?P<group_shortname>[0-9a-zA-Z]+)', views.set_active_group, name='set_active_group'),
 	url(r'delete_group/(?P<shortname>[0-9a-zA-Z]+)', views.delete_group, name='delete_group'),
 	url(r'edit_group/(?P<shortname>[0-9a-zA-Z]+)', views.edit_group, name='edit_group'),
+	url(r'privileges/(?P<shortname>[0-9a-zA-Z]+)', views.privileges, name='privileges'),
+	url(r'groups/(?P<shortname>[0-9a-zA-Z]+)/get_privilege', views.get_privilege, name='get_privilege'),
 ]
