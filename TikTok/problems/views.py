@@ -26,9 +26,10 @@ def index(request, shortname):
 		
 	request.session['group']  = shortname
 	
-	tmp = check_user_priviledge(request, group)
-	if tmp != True:
-		return tmp
+	if not group.open:
+		tmp = check_user_priviledge(request, group)
+		if tmp != True:
+			return tmp
 	
 	problems_list_total = Problem.objects.filter(group=group).order_by('pub_date')
 
