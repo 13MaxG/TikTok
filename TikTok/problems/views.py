@@ -208,6 +208,12 @@ def create(request):
 
 			my_file = request.FILES['pdf_file']
 			
+			if my_file.content_type != 'application/pdf':
+				return HttpResponse("Niedozwolony format pliku. Tylko PDF.")
+				
+			if my_file.size > 20971520: # 20 MB
+				return HttpResponse("Maksymalny rozmiar to 20MB.")
+			
 			if not path.exists('problems/pdf'):
 				makedirs('problems/pdf')
 			
