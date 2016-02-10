@@ -39,6 +39,7 @@
 <p>
 <a href="{% url 'problems:create'  %}">Dodaj problem</a> <br />
 <a href="{% url 'problems:edit_group' request.session.group %}">Edytuj konkurs</a> <br />
+{% if not group.open %} <a href="{% url 'problems:send_privileges' request.session.group %}">Wyślij przywileje</a> <br /> {% endif %}
 {% if not group.open %} <a href="{% url 'problems:privileges' request.session.group %}">Edytuj przywileje</a> <br /> {% endif %}
 <a href="{% url 'problems:delete_group' request.session.group %}">Usuń konkurs</a>
 </p>

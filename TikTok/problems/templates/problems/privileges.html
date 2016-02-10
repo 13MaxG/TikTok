@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}Przywileje {{group.name}}{% endblock %}
-{% block header %}Przywileje {{group.name}} {% endblock %}
+{% block header %}Przywileje <a href="{% url 'problems:index' group.shortname %}">{{group.name}}</a> {% endblock %}
 
 
 
@@ -18,11 +18,14 @@
 </form>
 
 {% if privileges_list %}
-    <ul>
+    <table>
+	<tr><td> Dla</td><td>Wykorzystane</td><td>hash</td><td>Akcja</td></tr> 
     {% for privilege in privileges_list %}
-        <li>{{privilege.hash}}	</li>
+        <tr><td>{% if privilege.sent == '' %} OTWARTY {% else %}{{ privilege.sent }} {% endif %}</td>
+		<td>{% if privilege.used == False %}  NIE {% else %} <a href="{% url 'user:detail' privilege.user.id %}"> {{privilege.user}}</a> {% endif %} </td>
+		<td>{{privilege.hash}}</td><td><a href="{% url 'problems:delete_privilege' group.shortname privilege.hash %}">usuń</a></td></tr>
     {% endfor %}
-    </ul>
+    </table>
 {% else %}
     <p>Brak wolnych przywilejów.</p>
 {% endif %}

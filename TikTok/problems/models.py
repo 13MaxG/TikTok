@@ -17,7 +17,8 @@ class Privilege(models.Model):
 	group = models.ForeignKey(Group, on_delete=models.CASCADE)
 	user = models.ForeignKey(User, default=1, null=True)
 	hash = models.CharField(default='', max_length=255)
-	sent = models.BooleanField(default=False)
+	used = models.BooleanField(default=False)
+	sent = models.CharField(default='', max_length=255)
 	
 	
 class Problem(models.Model):

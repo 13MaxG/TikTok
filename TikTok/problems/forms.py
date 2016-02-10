@@ -8,6 +8,10 @@ class CommentForm(forms.Form):
 class GetPrivilegeForm(forms.Form):
 	hash = forms.CharField(label='Kod dostępu', widget=forms.Textarea)
 
+
+class SendPrivilegesForm(forms.Form):
+	emails = forms.CharField(label='Emaile(każdy w nowej linii)', widget=forms.Textarea)
+	
 	
 class SubmitForm(forms.Form):
 	code = forms.CharField(label='Kod', widget=forms.Textarea)

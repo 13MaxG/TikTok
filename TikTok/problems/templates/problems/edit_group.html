@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}Zmień grupę {{group.name}}{% endblock %}
-{% block header %}Zmień grupę {{group.name}} {% endblock %}
+{% block header %}Zmień grupę <a href="{% url 'problems:index' group.shortname %}">{{group.name}}</a> {% endblock %}
 
 
 

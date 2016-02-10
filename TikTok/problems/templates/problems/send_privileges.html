@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Wyślij przywileje {{group.name}}{% endblock %}
+{% block header %}Wyślij przywileje <a href="{% url 'problems:index' group.shortname %}">{{group.name}}</a> {% endblock %}
+
+
+
+{% block bonusAction %}
+
+{% endblock %}
+
+
+{% block content %}
+
+{{message}}
+<form enctype="multipart/form-data"  action="{% url 'problems:send_privileges' group.shortname %}" method="post">
+{% csrf_token %}
+<table>
+<tr><td>Konkurs</td><td>{{group.name}}</td>
+	{{ form.as_table }}
+	</table>
+<input type="submit" value="Wyślij">
+
+<br />
+<a href="{% url 'problems:privileges' group.shortname %}">Zobacz przywileje</a>
+
+{% endblock %}
+
+
+

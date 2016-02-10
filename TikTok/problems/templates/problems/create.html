@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}Nowy problem{% endblock %}
-{% block header %}Nowy problem{% endblock %}
+{% block header %}Nowy problem <a href="{% url 'problems:index' group.shortname %}">{{group.name}}</a>{% endblock %}
 
 
 

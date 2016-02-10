@@ -6,12 +6,15 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.mail import send_mail
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 from submits.executer import execute
 from submits.models import Submit
 from user.models import MyUser, Ranking
 from user.views import check_user,check_admin,check_user_priviledge
-from .forms import CommentForm, SubmitForm, CreateForm, TestProgramForm, DeletionForm, EditNameForm, EditPDFForm, CreateGroupForm, GetPrivilegeForm
+from .forms import CommentForm, SubmitForm, CreateForm, TestProgramForm, DeletionForm, EditNameForm, EditPDFForm, CreateGroupForm, GetPrivilegeForm, SendPrivilegesForm
 from .models import Group, Problem, Comment, TestProgram, Privilege
 
 
@@ -44,6 +47,26 @@ def index(request, shortname):
 
 	return render(request, 'problems/index.html', {'problems_list': problems_list, 'group': group})
 
+	
+def delete_privilege(request, shortname, hash):
+	tmp = check_admin(request)
+	if tmp != True:
+		return tmp		
+		
+	try:
+		group = Group.objects.get(shortname=shortname)
+	except Group.DoesNotExist:
+		return HttpResponse("Nie istnieje taki konkurs")
+		
+	try:
+		privilege = Privilege.objects.get(group=group, hash=hash)
+		privilege.delete()
+	except Privilege.DoesNotExist:
+		return HttpResponse("Nie istieje taki przywilej")
+		
+	return HttpResponseRedirect('/problems/privileges/%s/' % group.shortname)
+
+	
 def get_privilege(request, shortname):
 	try:	
 		group = Group.objects.get(shortname=shortname)
@@ -66,15 +89,14 @@ def get_privilege(request, shortname):
 		form = GetPrivilegeForm(request.POST)
 		if form.is_valid():
 			hash = form.cleaned_data['hash']
-			if hash != '---':
-				try:
-					privilege = Privilege.objects.get(group=group, hash=hash)
-					privilege.user = request.user
-					privilege.hash = '---'
-					privilege.save()
-					return HttpResponseRedirect('/problems/list/%s/' % group.shortname)
-				except Privilege.DoesNotExist:
-					message = 'Niepoprawny kod dostępu'
+			try:
+				privilege = Privilege.objects.get(group=group, hash=hash, used=False)
+				privilege.user = request.user
+				privilege.used = True
+				privilege.save()
+				return HttpResponseRedirect('/problems/list/%s/' % group.shortname)
+			except Privilege.DoesNotExist:
+				message = 'Niepoprawny kod dostępu'
 
 		else:
 			form = GetPrivilegeForm()
@@ -82,6 +104,7 @@ def get_privilege(request, shortname):
 			
 			
 	return render(request, 'problems/get_privilege.html', {'message': message, 'group': group, 'form': form})
+	
 	
 def groups(request):
 	main = Group.objects.all()[0]
@@ -366,6 +389,53 @@ def add_test(request, problem_id):
 			form = TestProgramForm()
 	return render(request, 'problems/add_test.html', {'problem': problem, 'form': form})
 
+	
+def send_privileges(request, shortname):		
+	tmp = check_admin(request)
+	if tmp != True:
+		return tmp		
+		
+	try:
+		group = Group.objects.get(shortname=shortname)
+	except Group.DoesNotExist:
+		return HttpResponse("Nie istnieje taki konkurs")
+	
+	form = SendPrivilegesForm()
+	message=""
+	if request.method == 'POST':
+		form = SendPrivilegesForm(request.POST)
+		if form.is_valid():
+			
+			emails=form.cleaned_data['emails']
+			list_emails =  emails.splitlines()
+			
+			for email in list_emails:
+				print(email+"###")
+				try:
+					validate_email(email)
+				except ValidationError as e:
+					message += "pomijam: " + email + " <br />"
+				else:
+				
+					try:
+						privilege = Privilege.objects.get(group = group, sent=email)
+						message += "pomijam: " + email + " (już ma zaproszenie ) <br />"
+					except Privilege.DoesNotExist:
+						privilege = Privilege(group = group, hash = uuid4().hex, sent=email)
+						privilege.save()
+						send_mail('TikTok. '+group.name+". Kod dostepu", 'Twoj kod dostepu to: '+ privilege.hash, 'MACHINE@tiktok.pl', [email])
+				
+				
+			message += "wyslano"
+			
+		else:
+			return HttpResponse("Błąd")
+			
+		
+	context = {'message': message, 'group': group, 'form': form}
+	return render(request, 'problems/send_privileges.html', context)
+		
+		
 def privileges(request, shortname):		
 	tmp = check_admin(request)
 	if tmp != True:
@@ -377,7 +447,7 @@ def privileges(request, shortname):
 		return HttpResponse("Nie istnieje taki konkurs")
 		
 	message = ''
-	privileges_list = Privilege.objects.filter(group=group, sent=False).exclude(hash='---')
+	privileges_list = Privilege.objects.filter(group=group)
 
 	if request.method == 'POST':
 		privilege = Privilege(group = group, hash = uuid4().hex)
