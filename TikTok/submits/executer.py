@@ -38,13 +38,15 @@ def execute():
 			else:
 				for test in tests:
 					hash = uuid4().hex
-					# uruchom kernel
-					mathematica_input = "Developer`StartProtectedMode[]\n" + p.code + "\n" + test.code + '\nPrint["'+hash+'"];';
+					TIK = uuid4().hex
+					
+					mathematica_input = "Developer`StartProtectedMode[]\n" + p.code + "\nPrint[\"BEGIN_TEST\"];\n" + test.code.replace("TIK", TIK) + '\nPrint["'+hash+'"];';
+					
 					program = Popen(['wolfram'], stdout=PIPE, stdin=PIPE, stderr=PIPE)
+					#p.output += mathematica_input
 					timer = Timer(test.time, program.terminate)
 					timer.start()
 					output_data = program.communicate(input=bytes(mathematica_input, 'UTF-8'))[0]
-
 					fast_enough = False
 					if timer.is_alive():
 						timer.cancel()
@@ -54,25 +56,33 @@ def execute():
 						p.comment += "TEST " + str(test.id) + ": Przekroczono limit czasu"
 					else:
 						output = output_data.decode("utf-8")
-						position = output.rfind("ACC:")
-						accomplishment_string = output[position + 4:position + 7]
-
-						p.comment += "TEST " + str(test.id) + ": "
-						if output.find(hash) == -1:
-							p.comment += "Naruszono procedurę testowania\n"
-						else:
-							
-							if accomplishment_string == 'YES':
-								accomplishments += 1
-								p.comment += "OK\n"
-							else:
-								p.comment += "BŁĄD\n"
-
-							test_comments = findall("\(COMMENT:(.*?):COMMENT\)", output)
-							if len(test_comments) > 0:
-								p.comment += "TEST " + str(test.id) + " komentarz: " + test_comments[-1] + "\n"
-
 						p.output += output
+						
+						tpos = output.rfind("BEGIN_TEST");
+						output = output[tpos:];
+						
+						position = output.rfind("ACC:")
+						
+						if position == -1:
+							p.comment += "TEST " + str(test.id) + ": BŁAD\n"
+						else:
+							accomplishment_string = output[position + 4:position + 7]
+
+							p.comment += "TEST " + str(test.id) + ": "
+							if output.find(hash) == -1:
+								p.comment += "Naruszono procedurę testowania\n"
+							else:
+								if accomplishment_string == 'YES':
+									accomplishments += 1
+									p.comment += "OK\n"
+								else:
+									p.comment += "BŁĄD\n"
+
+						test_comments = findall("\(COMMENT:(.*?):COMMENT\)", output)
+						for comment in test_comments:
+							p.comment += "TEST " + str(test.id) + " komentarz: " + comment + "\n"
+
+							
 
 			p.accomplishment = (accomplishments == len(tests))
 
@@ -133,10 +143,10 @@ def update_stats(user, problem):
 			ranking = Ranking(my_user=my_user, group=problem.group, did=0)
 			ranking.did = len(problems_accomplishments)
 			ranking.save()
-
+			
 
 def is_mathematica_code_legit(code):
-	keywords = []
+	keywords = ['ClearAttributes', 'SetAttributes']
 	for word in keywords:
 		if word in code:
 			return False
