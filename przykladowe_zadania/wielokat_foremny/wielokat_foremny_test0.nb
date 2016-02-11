@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      2684,         91]
-NotebookOptionsPosition[      2374,         75]
-NotebookOutlinePosition[      2716,         90]
-CellTagsIndexPosition[      2673,         87]
+NotebookDataLength[      2811,         94]
+NotebookOptionsPosition[      2501,         78]
+NotebookOutlinePosition[      2843,         93]
+CellTagsIndexPosition[      2800,         90]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -42,7 +42,7 @@ Cell[BoxData[{
         RowBox[{"Pi", "/", "n"}]}]}], "}"}]}], "]"}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{
-  RowBox[{"acc", "=", "True"}], ";"}], "\[IndentingNewLine]", 
+  RowBox[{"count", "=", "0"}], ";"}], "\[IndentingNewLine]", 
  RowBox[{"For", "[", 
   RowBox[{
    RowBox[{"i", "=", "3"}], ",", 
@@ -53,24 +53,27 @@ Cell[BoxData[{
      RowBox[{
       RowBox[{
        RowBox[{"Sort", "[", 
-        RowBox[{"wielokatForemnyWzorzec", "[", "5", "]"}], "]"}], 
+        RowBox[{"wielokatForemnyWzorzec", "[", "i", "]"}], "]"}], 
        "\[NotEqual]", " ", 
        RowBox[{"Sort", "[", 
-        RowBox[{"wielokatForemny", "[", "5", "]"}], "]"}]}], ",", 
+        RowBox[{"wielokatForemny", "[", "i", "]"}], "]"}]}], ",", 
       "\[IndentingNewLine]", 
-      RowBox[{
-       RowBox[{"acc", " ", "=", " ", "False"}], ";", "\[IndentingNewLine]", 
-       "Break", ";"}]}], "\[IndentingNewLine]", "]"}], ";"}]}], 
-  "\[IndentingNewLine]", "]"}], "\[IndentingNewLine]", 
+      RowBox[{"Break", ";"}], ",", " ", 
+      RowBox[{"count", "=", 
+       RowBox[{"count", "+", "1"}]}]}], "\[IndentingNewLine]", "]"}], ";"}]}],
+   "\[IndentingNewLine]", "]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"If", "[", 
-   RowBox[{"acc", ",", " ", 
+   RowBox[{
+    RowBox[{"count", "\[Equal]", "30"}], ",", " ", 
     RowBox[{"Print", "[", "\"\<ACC:YES\>\"", "]"}], ",", " ", 
     RowBox[{"Print", "[", "\"\<ACC:_NO\>\"", "]"}]}], "]"}], ";"}]}], "Input",
- CellChangeTimes->{{3.660479867209741*^9, 3.6604799030972133`*^9}}],
+ CellChangeTimes->{{3.660479867209741*^9, 3.6604799030972133`*^9}, {
+  3.6641691190111103`*^9, 3.664169167746149*^9}}],
 
 Cell[BoxData["\<\"ACC:YES\"\>"], "Print",
- CellChangeTimes->{{3.660479904296075*^9, 3.6604799057300816`*^9}}]
+ CellChangeTimes->{{3.660479904296075*^9, 3.6604799057300816`*^9}, {
+  3.664169161152257*^9, 3.664169175136825*^9}}]
 }, Open  ]]
 },
 WindowSize->{738, 746},
@@ -90,12 +93,11 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[580, 22, 1666, 47, 212, "Input"],
-Cell[2249, 71, 109, 1, 23, "Print"]
+Cell[580, 22, 1744, 49, 192, "Input"],
+Cell[2327, 73, 158, 2, 23, "Print"]
 }, Open  ]]
 }
 ]
 *)
 
 (* End of internal cache information *)
-
