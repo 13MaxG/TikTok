@@ -406,7 +406,7 @@ def send_privileges(request, shortname):
 		form = SendPrivilegesForm(request.POST)
 		if form.is_valid():
 			
-			emails=form.cleaned_data['emails']
+			emails=form.cleaned_data['emails'].lower()
 			list_emails =  emails.splitlines()
 			
 			for email in list_emails:
