@@ -5,6 +5,7 @@ from user.models import MyUser, Ranking
 from subprocess import Popen, PIPE
 from re import findall
 from threading import Timer
+from uuid import uuid4
 
 executing = False
 
@@ -36,8 +37,9 @@ def execute():
 				p.comment += "Użyto niedozwolonego słowa"
 			else:
 				for test in tests:
+					hash = uuid4().hex
 					# uruchom kernel
-					mathematica_input = p.code + "\n\n" + test.code
+					mathematica_input = "Developer`StartProtectedMode[]\n" + p.code + "\n" + test.code + '\nPrint["'+hash+'"];';
 					program = Popen(['wolfram'], stdout=PIPE, stdin=PIPE, stderr=PIPE)
 					timer = Timer(test.time, program.terminate)
 					timer.start()
@@ -55,16 +57,20 @@ def execute():
 						position = output.rfind("ACC:")
 						accomplishment_string = output[position + 4:position + 7]
 
-						p.comment += "TEST " + str(test.id) + ":"
-						if accomplishment_string == 'YES':
-							accomplishments += 1
-							p.comment += "OK\n"
+						p.comment += "TEST " + str(test.id) + ": "
+						if output.find(hash) == -1:
+							p.comment += "Naruszono procedurę testowania\n"
 						else:
-							p.comment += "BŁĄD\n"
+							
+							if accomplishment_string == 'YES':
+								accomplishments += 1
+								p.comment += "OK\n"
+							else:
+								p.comment += "BŁĄD\n"
 
-						test_comments = findall("\(COMMENT:(.*?):COMMENT\)", output)
-						if len(test_comments) > 0:
-							p.comment += "TEST " + str(test.id) + " komentarz: " + test_comments[-1] + "\n"
+							test_comments = findall("\(COMMENT:(.*?):COMMENT\)", output)
+							if len(test_comments) > 0:
+								p.comment += "TEST " + str(test.id) + " komentarz: " + test_comments[-1] + "\n"
 
 						p.output += output
 
@@ -130,7 +136,7 @@ def update_stats(user, problem):
 
 
 def is_mathematica_code_legit(code):
-	keywords = ['kupa', 'pupa']
+	keywords = []
 	for word in keywords:
 		if word in code:
 			return False
