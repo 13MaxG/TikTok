@@ -122,7 +122,16 @@ def edit(request):
 		form = EditForm(request.POST)
 		if form.is_valid():
 			email = form.cleaned_data['email'].lower()
-			if len(User.objects.filter(email=email)) != 0:
+			
+			email_ok = True
+			try:
+				x = User.objects.filter(email=email)
+				if x != user:
+					email_ok = False
+			except User.DoesNotExist:
+				pass
+				
+			if email_ok:
 					message = 'Taki email jest już zajęty. '
 			else:
 				user.email = form.cleaned_data['email'].lower()
