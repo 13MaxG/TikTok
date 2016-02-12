@@ -25,7 +25,7 @@
 
         <tr class="click" onclick="document.location = '{% url 'submits:detail' submit.id %}';" >
             <td><a href="{% url 'submits:detail' submit.id %}">{{submit.id}}</a></td>
-            <td><a href="{% url 'problems:detail' submit.problem.id %}">{{submit.problem.name}}</a></td>
+            <td><a href="{% url 'submits:detail' submit.id %}">{{submit.problem.name}}</a></td>
             <td>{{submit.pub_date|date:"H:i d/m/Y"}}</td>
 
             {% if not submit.executed and not submit.is_executing %}
