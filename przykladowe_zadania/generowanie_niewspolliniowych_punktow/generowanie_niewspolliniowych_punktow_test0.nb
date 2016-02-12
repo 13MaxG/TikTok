@@ -10,14 +10,37 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      4086,        118]
-NotebookOptionsPosition[      3845,        105]
-NotebookOutlinePosition[      4188,        120]
-CellTagsIndexPosition[      4145,        117]
+NotebookDataLength[      5503,        163]
+NotebookOptionsPosition[      5043,        142]
+NotebookOutlinePosition[      5385,        157]
+CellTagsIndexPosition[      5342,        154]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
 Notebook[{
+Cell[TextData[StyleBox["Rozwi\:0105zanie", "Subsubsection"]], "Text",
+ CellChangeTimes->{{3.6642779721053*^9, 3.66427797381954*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"generuj", "[", "n_", "]"}], " ", ":=", " ", 
+  RowBox[{"Table", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"x", ",", 
+      SuperscriptBox["x", "2"]}], "}"}], ",", " ", 
+    RowBox[{"{", 
+     RowBox[{"x", ",", "0", ",", 
+      RowBox[{"n", "-", "1"}], ",", "1"}], "}"}]}], "]"}], " "}]], "Input",
+ CellChangeTimes->{{3.664277966147132*^9, 3.6642779680755196`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Test", "Subsubsection",
+ CellChangeTimes->{{3.6642779812440395`*^9, 3.6642779816910567`*^9}}],
+
+Cell[CellGroupData[{
+
 Cell[BoxData[{
  RowBox[{
   RowBox[{
@@ -46,6 +69,12 @@ Cell[BoxData[{
    RowBox[{
     RowBox[{"X", " ", "=", " ", 
      RowBox[{"generuj", "[", "i", "]"}]}], ";", "\[IndentingNewLine]", 
+    RowBox[{"If", "[", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"Length", "[", "X", "]"}], "\[NotEqual]", " ", "i"}], ",", " ", 
+      RowBox[{"acc", " ", "=", " ", "False"}]}], "]"}], ";", 
+    "\[IndentingNewLine]", 
     RowBox[{"For", "[", 
      RowBox[{
       RowBox[{"a", "=", "1"}], ",", 
@@ -101,10 +130,18 @@ Cell[BoxData[{
   RowBox[{"If", "[", 
    RowBox[{"acc", ",", " ", 
     RowBox[{"Print", "[", "\"\<ACC:YES\>\"", "]"}], ",", " ", 
-    RowBox[{"Print", "[", "\"\<ACC:_NO\>\"", "]"}]}], "]"}], ";"}]}], "Input"]
+    RowBox[{"Print", "[", "\"\<ACC:_NO\>\"", "]"}]}], "]"}], ";"}]}], "Input",
+ CellChangeTimes->{{3.6642776935830665`*^9, 3.6642777554517264`*^9}, {
+  3.6642778267320366`*^9, 3.6642778286519356`*^9}, {3.66427789977081*^9, 
+  3.6642779609980483`*^9}}],
+
+Cell[BoxData["\<\"ACC:YES\"\>"], "Print",
+ CellChangeTimes->{3.6642778932075806`*^9}]
+}, Open  ]]
+}, Open  ]]
 },
 WindowSize->{738, 746},
-WindowMargins->{{Automatic, -36}, {56, Automatic}},
+WindowMargins->{{504, Automatic}, {6, Automatic}},
 FrontEndVersion->"10.2 for Microsoft Windows (64-bit) (July 29, 2015)",
 StyleDefinitions->"Default.nb"
 ]
@@ -119,7 +156,15 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[558, 20, 3283, 83, 452, "Input"]
+Cell[558, 20, 132, 1, 36, "Text"],
+Cell[693, 23, 406, 11, 33, "Input"],
+Cell[CellGroupData[{
+Cell[1124, 38, 99, 1, 34, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[1248, 43, 3679, 92, 472, "Input"],
+Cell[4930, 137, 85, 1, 23, "Print"]
+}, Open  ]]
+}, Open  ]]
 }
 ]
 *)
