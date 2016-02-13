@@ -57,7 +57,7 @@ ROOT_URLCONF = 'TikTok.urls'
 TEMPLATES = [
 	{
 		'BACKEND': 'django.template.backends.django.DjangoTemplates',
-		'DIRS': ['templates'],
+		'DIRS': [os.path.join(BASE_DIR, 'templates')],
 		'APP_DIRS': True,
 		'OPTIONS': {
 			'context_processors': [
@@ -123,5 +123,10 @@ STATICFILES_DIRS = [
 	os.path.join(BASE_DIR, "static"),
 	'/var/www/static/',
 ]
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'templates'),
+)
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+PRODUCTION = True
+if PRODUCTION:
+	EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
