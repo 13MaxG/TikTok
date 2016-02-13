@@ -128,5 +128,7 @@ TEMPLATE_DIRS = (
 )
 
 PRODUCTION = True
+MY_PATH = BASE_DIR
 if PRODUCTION:
 	EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+	MY_PATH = ''
