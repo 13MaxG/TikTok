@@ -346,10 +346,10 @@ def create(request):
 			if my_file.size > 20971520: # 20 MB
 				return HttpResponse("Maksymalny rozmiar to 20MB.")
 			
-			if not path.exists('problems/pdf'):
-				makedirs('problems/pdf')
+			if not path.exists('static/pdf'):
+				makedirs('static/pdf')
 			
-			filename = 'problems/pdf/problem' + str(next_id) + '.pdf'
+			filename = 'static/pdf/problem' + str(next_id) + '.pdf'
 			with open(filename, 'wb+') as destination:
 				for chunk in my_file.chunks():
 					destination.write(chunk)
@@ -594,7 +594,16 @@ def edit_pdf(request, problem_id):
 		if form.is_valid():
 
 			my_file = request.FILES['pdf_file']
-			filename = 'problems/pdf/problem' + str(problem.id) + '.pdf'
+			if my_file.content_type != 'application/pdf':
+				return HttpResponse("Niedozwolony format pliku. Tylko PDF.")
+				
+			if my_file.size > 20971520: # 20 MB
+				return HttpResponse("Maksymalny rozmiar to 20MB.")
+			
+			if not path.exists('static/pdf'):
+				makedirs('static/pdf')
+			
+			filename = 'static/pdf/problem' + str(next_id) + '.pdf'
 			with open(filename, 'wb+') as destination:
 				for chunk in my_file.chunks():
 					destination.write(chunk)
