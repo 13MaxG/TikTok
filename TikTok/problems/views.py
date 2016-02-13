@@ -350,8 +350,8 @@ def create(request):
 			if my_file.size > 20971520: # 20 MB
 				return HttpResponse("Maksymalny rozmiar to 20MB.")
 			
-			filename = settings.MY_PATH+'/static/pdf/problem' + str(next_id) + '.pdf'
-			with open(filename, 'wb+') as destination:
+			filename = '/static/pdf/problem' + str(next_id) + '.pdf'
+			with open(settings.MY_PATH+filename, 'wb+') as destination:
 				for chunk in my_file.chunks():
 					destination.write(chunk)
 
@@ -601,8 +601,8 @@ def edit_pdf(request, problem_id):
 			if my_file.size > 20971520: # 20 MB
 				return HttpResponse("Maksymalny rozmiar to 20MB.")
 			
-			filename = settings.MY_PATH+'static/pdf/problem' + str(next_id) + '.pdf'
-			with open(filename, 'wb+') as destination:
+			filename = '/static/pdf/problem' + str(next_id) + '.pdf'
+			with open(settings.MY_PATH+filename, 'wb+') as destination:
 				for chunk in my_file.chunks():
 					destination.write(chunk)
 
