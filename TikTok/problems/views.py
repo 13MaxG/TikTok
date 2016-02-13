@@ -10,6 +10,7 @@ from django.core.mail import send_mail
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
+from django.conf import settings
 from submits.executer import execute
 from submits.models import Submit
 from user.models import MyUser, Ranking
@@ -234,9 +235,12 @@ def download(request, problem_id):
 		if tmp != True:
 			return tmp
 		
-		file = open(problem.pdf_file_link, 'rb')
-		response = HttpResponse(file, content_type='application/pdf')
-		return response
+		if settings.PRODUCTION:
+			file = open(problem.pdf_file_link, 'rb')
+			response = HttpResponse(file, content_type='application/pdf')
+			return response
+		else:
+			return HttpResponseRedirect(problem.pdf_file_link)
 	except Problem.DoesNotExist:
 		return HttpResponse(request, "Nie istnieje taki problem")
 
@@ -346,10 +350,7 @@ def create(request):
 			if my_file.size > 20971520: # 20 MB
 				return HttpResponse("Maksymalny rozmiar to 20MB.")
 			
-			if not path.exists('static/pdf'):
-				makedirs('static/pdf')
-			
-			filename = 'static/pdf/problem' + str(next_id) + '.pdf'
+			filename = settings.MY_DIR+'/static/pdf/problem' + str(next_id) + '.pdf'
 			with open(filename, 'wb+') as destination:
 				for chunk in my_file.chunks():
 					destination.write(chunk)
@@ -600,10 +601,7 @@ def edit_pdf(request, problem_id):
 			if my_file.size > 20971520: # 20 MB
 				return HttpResponse("Maksymalny rozmiar to 20MB.")
 			
-			if not path.exists('static/pdf'):
-				makedirs('static/pdf')
-			
-			filename = 'static/pdf/problem' + str(next_id) + '.pdf'
+			filename = settings.MY_DIR+'static/pdf/problem' + str(next_id) + '.pdf'
 			with open(filename, 'wb+') as destination:
 				for chunk in my_file.chunks():
 					destination.write(chunk)
