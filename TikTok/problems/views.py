@@ -606,7 +606,7 @@ def edit_pdf(request, problem_id):
 			if not path.exists(settings.MY_PATH+'/static/pdf'):
 				makedirs(settings.MY_PATH+'/static/pdf')
 
-			filename = '/static/pdf/problem' + str(next_id) + '.pdf'
+			filename = '/static/pdf/problem' + str(problem.id) + '.pdf'
 			with open(settings.MY_PATH+filename, 'wb+') as destination:
 				for chunk in my_file.chunks():
 					destination.write(chunk)
