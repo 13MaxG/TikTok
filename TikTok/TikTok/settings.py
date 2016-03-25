@@ -125,8 +125,7 @@ STATICFILES_DIRS = [
 ]
 
 
-PRODUCTION = True
+PRODUCTION = False
 MY_PATH = BASE_DIR
 if PRODUCTION:
-	EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 	MY_PATH = ''
