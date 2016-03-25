@@ -124,8 +124,14 @@ STATICFILES_DIRS = [
 	'/var/www/static/',
 ]
 
-
 PRODUCTION = False
 MY_PATH = BASE_DIR
 if PRODUCTION:
 	MY_PATH = ''
+	
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'EMAIL'
+EMAIL_HOST_PASSWORD = 'PASSWORD'
